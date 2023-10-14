@@ -26,10 +26,10 @@ public class CommentServiceImpl implements CommentService {
 
 
     private final CommentRepository commentRepository;
-    private final CommentMapper commentMapper;
     private final AdRepository adRepository;
-
     private final UserRepository userRepository;
+
+
 
 
     /**
@@ -47,7 +47,7 @@ public class CommentServiceImpl implements CommentService {
             throw new NullPointerException();
         } else {
             Collection<CommentEntity> commentEntities = adEntity.get().getCommentEntities();
-            List<Comment> commentList = commentMapper.commentEntityListToCommentList(List.copyOf(commentEntities)); //c маппером не очень уверен
+            List<Comment> commentList = CommentMapper.INSTANCE.commentEntityListToCommentList(List.copyOf(commentEntities)); //c маппером не очень уверен
             Comments comments = new Comments();
             comments.setCount(commentList.size());
             comments.setResults(commentList);
@@ -76,7 +76,7 @@ public class CommentServiceImpl implements CommentService {
                 .adId(id)
                 .build();
 
-        CommentEntity commentEntity = commentMapper.commentToCommentEntity(comment);
+        CommentEntity commentEntity = CommentMapper.INSTANCE.commentToCommentEntity(comment);
         commentRepository.save(commentEntity);
         return Optional.of(comment);
     }
@@ -120,7 +120,7 @@ public class CommentServiceImpl implements CommentService {
         commentEntity.setText(createOrUpdateComment.getText());
         commentRepository.save(commentEntity);
 
-        Comment comment = commentMapper.commentEntityToComment(commentEntity);
+        Comment comment = CommentMapper.INSTANCE.commentEntityToComment(commentEntity);
 
         return Optional.of(comment);
     }

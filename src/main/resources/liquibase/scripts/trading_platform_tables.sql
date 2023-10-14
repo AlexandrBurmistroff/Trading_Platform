@@ -36,3 +36,7 @@ CREATE TABLE comment_entity (
     created_at          bigint,
     user_entity_id      int4
 );
+
+-- changeset KrozhDev:create-comment_entity-table
+ALTER TABLE comment_entity
+ADD ad_entity_id int4 NOT NULL
