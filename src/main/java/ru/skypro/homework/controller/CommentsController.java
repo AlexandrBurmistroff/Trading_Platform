@@ -20,9 +20,7 @@ import java.util.Optional;
 @RequestMapping("/ads")
 public class CommentsController {
 
-
     private final CommentService commentService;
-
 
     /**
      * Получение комментариев объявления.
@@ -54,22 +52,20 @@ public class CommentsController {
     //todo убрать authentication
     @PostMapping("/{id}/comments")
     public ResponseEntity<Comment> addComment(@PathVariable Integer id,
-                                              @RequestBody CreateOrUpdateComment createOrUpdateComment,
-                                              Authentication authentication) {
+                                              @RequestBody CreateOrUpdateComment createOrUpdateComment) {
 
-        if (!authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+//        if (!authentication.isAuthenticated()) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//
+//        String email = authentication.getName();
 
-        String email = authentication.getName();
-
-        Optional<Comment> commentOptional = commentService.addComment(id, createOrUpdateComment, email);
-        if (commentOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        Optional<Comment> commentOptional = commentService.addComment(id, createOrUpdateComment);
+//        if (commentOptional.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
         return ResponseEntity.status(HttpStatus.OK).body(commentOptional.get());
     }
-
 
     /**
      * Удаление комментария.
@@ -78,7 +74,6 @@ public class CommentsController {
      * @return ResponseEntity.
      * Метод отправляет запрос на сервис удалить конкретный комментарий к объявлению.
      */
-
 
     //todo после авторизации сделать запрещено удаялять чужие посты
     @DeleteMapping("/{adId}/comments/{commentId}")
@@ -112,4 +107,5 @@ public class CommentsController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(comment.get());
     }
+
 }

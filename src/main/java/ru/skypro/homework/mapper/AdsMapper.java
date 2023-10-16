@@ -19,8 +19,6 @@ public interface AdsMapper {
     @Mapping(source = "imageEntity.filePath", target = "image")
     Ad adEntityToAd(AdEntity adEntity);
 
-    @Mapping(source = "userEntity.id", target = "author")
-    @Mapping(source = "imageEntity.filePath", target = "image")
     List<Ad> adEntityListToAdList(List<AdEntity> adEntityList);
 
     @Mapping(source = "userEntity.firstName", target = "authorFirstName")

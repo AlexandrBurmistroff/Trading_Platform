@@ -3,8 +3,6 @@ package ru.skypro.homework.dto;
 import lombok.Builder;
 import lombok.Data;
 
-
-
 @Data
 @Builder
 public class Comment {
@@ -19,11 +17,11 @@ public class Comment {
      * @param text текст комментария из сущности adEntity
      */
 
-    private Integer author; //userEntity
+    private Integer author;
     private String authorImage;
     private String authorFirstName;
-    private Long createdAt;//
-    private Integer pk;//
-    private String text;//
+    private Long createdAt;
+    private Integer pk;
+    private String text;
     private Integer adId;
 }

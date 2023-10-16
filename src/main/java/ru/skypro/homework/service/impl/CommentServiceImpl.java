@@ -12,14 +12,11 @@ import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.CommentRepository;
-import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.CommentService;
+import ru.skypro.homework.util.UserAuthentication;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalField;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -30,14 +27,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
-
     private final CommentRepository commentRepository;
+
     private final AdRepository adRepository;
-    private final UserRepository userRepository;
+
     private final CommentMapper commentMapper;
 
-
-
+    private final UserAuthentication userAuthentication;
 
     /**
      * @param id id комменатрия
@@ -54,14 +50,13 @@ public class CommentServiceImpl implements CommentService {
             throw new NullPointerException();
         } else {
             Collection<CommentEntity> commentEntities = adEntity.get().getCommentEntities();
-            List<Comment> commentList = commentMapper.commentEntityListToCommentList(List.copyOf(commentEntities)); //c маппером не очень уверен
+            List<Comment> commentList = commentMapper.commentEntityListToCommentList(List.copyOf(commentEntities));
             Comments comments = new Comments();
             comments.setCount(commentList.size());
             comments.setResults(commentList);
             return Optional.of(comments);
         }
     }
-
 
     /**
      * @param id id объявления
@@ -71,26 +66,22 @@ public class CommentServiceImpl implements CommentService {
      * @return Optional<Comment>
      */
     @Override
-    public Optional<Comment> addComment(Integer id, CreateOrUpdateComment createOrUpdateComment, String email) {
-        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(email);
+    public Optional<Comment> addComment(Integer id, CreateOrUpdateComment createOrUpdateComment) {
+        UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
+        Optional<UserEntity> userEntityOptional = Optional.of(currentUserEntity);
         UserEntity userEntity = userEntityOptional.orElseThrow(NullPointerException::new);
+
         Optional<AdEntity> adEntityOptional = adRepository.findById(id);
         AdEntity adEntity = adEntityOptional.orElseThrow(NullPointerException::new);
+
         CommentEntity commentEntity = commentMapper.createOrUpdateCommentToCommentEntity(createOrUpdateComment);
         commentEntity.setAdEntity(adEntity);
         commentEntity.setUserEntity(userEntity);
         commentEntity.setCreatedAt(LocalDateTime.now().getLong(ChronoField.EPOCH_DAY));
         commentRepository.save(commentEntity);
-        Comment comment = commentMapper.commentEntityToComment(commentEntity);
-        comment.setAuthor(userEntity.getId());
-        comment.setAuthorFirstName(userEntity.getFirstName());
-//todo добавить время и достать аватарку автора
-        comment.setAuthorImage("authorImage");
-        comment.setAdId(adEntity.getPk());
 
-        return Optional.of(comment);
+        return Optional.of(commentMapper.commentEntityToComment(commentEntity));
     }
-
 
     /**
      * @param id id объявления
@@ -125,7 +116,6 @@ public class CommentServiceImpl implements CommentService {
         if (  adEntityOptional.isEmpty()) {
             throw new NullPointerException();
         }
-
         Optional<CommentEntity> commentEntityOptional = adEntityOptional.orElseThrow(NullPointerException::new)
                 .getCommentEntities().stream()
                 .filter(Objects::nonNull)
@@ -135,22 +125,13 @@ public class CommentServiceImpl implements CommentService {
         if (commentEntityOptional.isEmpty()) {
             return Optional.empty();
         }
-
         CommentEntity commentEntity = commentEntityOptional.get();
-
         CommentEntity commentEntityMapper = commentMapper.createOrUpdateCommentToCommentEntity(createOrUpdateComment);
         commentEntity.setText(commentEntityMapper.getText());
-        //todo обновить время
+        commentEntity.setCreatedAt(LocalDateTime.now().getLong(ChronoField.EPOCH_DAY));
         commentRepository.save(commentEntity);
-        Comment comment = commentMapper.commentEntityToComment(commentEntity);
-        comment.setAdId(adId);
-        comment.setAuthor(commentEntity.getUserEntity().getId());
-        //todo добавить аватарку
-        comment.setAuthorImage("image");
-        comment.setAuthorFirstName(commentEntity.getUserEntity().getFirstName());
-        //todo добавить время
-        comment.setCreatedAt(2L);
 
-        return Optional.of(comment);
+        return Optional.of(commentMapper.commentEntityToComment(commentEntity));
     }
+
 }

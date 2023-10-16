@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface CommentService {
 
     Optional<Comments> getComments(Integer id);
-    Optional<Comment> addComment(Integer id, CreateOrUpdateComment createOrUpdateComment, String email);
+    Optional<Comment> addComment(Integer id, CreateOrUpdateComment createOrUpdateComment);
     boolean deleteComment(Integer id, Integer commentId);
     Optional<Comment> updateComment(Integer adId, Integer commentId, CreateOrUpdateComment createOrUpdateComment);
 }
