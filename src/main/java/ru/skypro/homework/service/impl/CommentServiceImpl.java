@@ -15,7 +15,11 @@ import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.CommentService;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -75,7 +79,7 @@ public class CommentServiceImpl implements CommentService {
         CommentEntity commentEntity = commentMapper.createOrUpdateCommentToCommentEntity(createOrUpdateComment);
         commentEntity.setAdEntity(adEntity);
         commentEntity.setUserEntity(userEntity);
-        commentEntity.setCreatedAt(1L);
+        commentEntity.setCreatedAt(LocalDateTime.now().getLong(ChronoField.EPOCH_DAY));
         commentRepository.save(commentEntity);
         Comment comment = commentMapper.commentEntityToComment(commentEntity);
         comment.setAuthor(userEntity.getId());
@@ -122,7 +126,6 @@ public class CommentServiceImpl implements CommentService {
             throw new NullPointerException();
         }
 
-//todo исправить стрим, проверить все на эндпоинты по свагеру
         Optional<CommentEntity> commentEntityOptional = adEntityOptional.orElseThrow(NullPointerException::new)
                 .getCommentEntities().stream()
                 .filter(Objects::nonNull)
@@ -134,8 +137,6 @@ public class CommentServiceImpl implements CommentService {
         }
 
         CommentEntity commentEntity = commentEntityOptional.get();
-
-
 
         CommentEntity commentEntityMapper = commentMapper.createOrUpdateCommentToCommentEntity(createOrUpdateComment);
         commentEntity.setText(commentEntityMapper.getText());
