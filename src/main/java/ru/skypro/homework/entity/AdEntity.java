@@ -2,8 +2,11 @@ package ru.skypro.homework.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import ru.skypro.homework.dto.Comment;
+import ru.skypro.homework.dto.Comments;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -28,4 +31,6 @@ public class AdEntity {
     @OneToOne
     private ImageEntity imageEntity;
 
+    @OneToMany(mappedBy = "adEntity")
+    private Collection<CommentEntity> commentEntities;
 }
