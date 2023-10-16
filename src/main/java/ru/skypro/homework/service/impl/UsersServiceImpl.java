@@ -9,7 +9,6 @@ import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.User;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.mapper.UserMapper;
-import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.service.UsersService;
@@ -30,9 +29,10 @@ public class UsersServiceImpl implements UsersService {
 
     private final ImageService imageService;
 
+    private final UserMapper userMapper;
+
     private final UserAuthentication userAuthentication;
 
-    private final ImageRepository imageRepository;
 
     /**
      * Метод, который сравнивает значения текущего пароля с новым
@@ -54,12 +54,7 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public User getUser() {
         UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
-        User user = UserMapper.INSTANCE.userEntityToUser(currentUserEntity);
-
-        // TODO: 14.10.2023 доработать UserMapper
-        String userFilePath = imageRepository.findFilePathByUserEntityId(currentUserEntity.getId());
-        user.setImage(userFilePath);
-        return user;
+        return userMapper.userEntityToUser(currentUserEntity);
     }
 
     /**

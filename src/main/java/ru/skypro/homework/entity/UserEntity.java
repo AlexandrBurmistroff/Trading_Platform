@@ -31,4 +31,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "userEntity")
     private Collection<CommentEntity> commentEntities;
 
+    @OneToOne
+    private ImageEntity imageEntity;
+
 }
