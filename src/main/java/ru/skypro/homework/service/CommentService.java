@@ -10,6 +10,6 @@ public interface CommentService {
 
     Optional<Comments> getComments(Integer id);
     Optional<Comment> addComment(Integer id, CreateOrUpdateComment createOrUpdateComment, String email);
-    void deleteComment(Integer id, Integer commentId);
+    boolean deleteComment(Integer id, Integer commentId);
     Optional<Comment> updateComment(Integer adId, Integer commentId, CreateOrUpdateComment createOrUpdateComment);
 }

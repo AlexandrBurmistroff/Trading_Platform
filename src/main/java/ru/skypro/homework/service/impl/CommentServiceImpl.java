@@ -15,8 +15,10 @@ import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.CommentService;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -28,6 +30,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final AdRepository adRepository;
     private final UserRepository userRepository;
+    private final CommentMapper commentMapper;
 
 
 
@@ -47,7 +50,7 @@ public class CommentServiceImpl implements CommentService {
             throw new NullPointerException();
         } else {
             Collection<CommentEntity> commentEntities = adEntity.get().getCommentEntities();
-            List<Comment> commentList = CommentMapper.INSTANCE.commentEntityListToCommentList(List.copyOf(commentEntities)); //c маппером не очень уверен
+            List<Comment> commentList = commentMapper.commentEntityListToCommentList(List.copyOf(commentEntities)); //c маппером не очень уверен
             Comments comments = new Comments();
             comments.setCount(commentList.size());
             comments.setResults(commentList);
@@ -67,17 +70,20 @@ public class CommentServiceImpl implements CommentService {
     public Optional<Comment> addComment(Integer id, CreateOrUpdateComment createOrUpdateComment, String email) {
         Optional<UserEntity> userEntityOptional = userRepository.findByEmail(email);
         UserEntity userEntity = userEntityOptional.orElseThrow(NullPointerException::new);
-        Comment comment = Comment.builder()
-                .author(userEntity.getId())
-                .authorFirstName(userEntity.getFirstName())
-                .authorImage(userEntity.getFilePath())
-                .createdAt(1L) //todo добавить время
-                .text(createOrUpdateComment.getText())
-                .adId(id)
-                .build();
-
-        CommentEntity commentEntity = CommentMapper.INSTANCE.commentToCommentEntity(comment);
+        Optional<AdEntity> adEntityOptional = adRepository.findById(id);
+        AdEntity adEntity = adEntityOptional.orElseThrow(NullPointerException::new);
+        CommentEntity commentEntity = commentMapper.createOrUpdateCommentToCommentEntity(createOrUpdateComment);
+        commentEntity.setAdEntity(adEntity);
+        commentEntity.setUserEntity(userEntity);
+        commentEntity.setCreatedAt(1L);
         commentRepository.save(commentEntity);
+        Comment comment = commentMapper.commentEntityToComment(commentEntity);
+        comment.setAuthor(userEntity.getId());
+        comment.setAuthorFirstName(userEntity.getFirstName());
+//todo добавить время и достать аватарку автора
+        comment.setAuthorImage("authorImage");
+        comment.setAdId(adEntity.getPk());
+
         return Optional.of(comment);
     }
 
@@ -90,12 +96,12 @@ public class CommentServiceImpl implements CommentService {
      * @throws NullPointerException если объявление не найдено
      */
     @Override
-    public void deleteComment(Integer id, Integer commentId) {
-        if (adRepository.findById(id).isEmpty()) {
-            throw new NullPointerException();
+    public boolean deleteComment(Integer id, Integer commentId) {
+        if (commentRepository.existsById(commentId)) {
+            commentRepository.deleteById(commentId);
+            return true;
         }
-        commentRepository.deleteById(commentId); //todo не очень уверен
-
+        return false;
     }
 
     /**
@@ -110,17 +116,39 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Optional<Comment> updateComment(Integer adId, Integer commentId, CreateOrUpdateComment createOrUpdateComment) {
 
-        Optional<CommentEntity> commentEntityOptional = commentRepository.findById(commentId);
+        Optional<AdEntity> adEntityOptional = adRepository.findById(adId);
 
-        if (commentEntityOptional.isEmpty()) {
+        if (  adEntityOptional.isEmpty()) {
             throw new NullPointerException();
         }
 
-        CommentEntity commentEntity = commentEntityOptional.get();
-        commentEntity.setText(createOrUpdateComment.getText());
-        commentRepository.save(commentEntity);
+//todo исправить стрим, проверить все на эндпоинты по свагеру
+        Optional<CommentEntity> commentEntityOptional = adEntityOptional.orElseThrow(NullPointerException::new)
+                .getCommentEntities().stream()
+                .filter(Objects::nonNull)
+                .filter(commentEntity1 -> commentEntity1.getPk().equals(commentId))
+                .findFirst();
 
-        Comment comment = CommentMapper.INSTANCE.commentEntityToComment(commentEntity);
+        if (commentEntityOptional.isEmpty()) {
+            return Optional.empty();
+        }
+
+        CommentEntity commentEntity = commentEntityOptional.get();
+
+
+
+        CommentEntity commentEntityMapper = commentMapper.createOrUpdateCommentToCommentEntity(createOrUpdateComment);
+        commentEntity.setText(commentEntityMapper.getText());
+        //todo обновить время
+        commentRepository.save(commentEntity);
+        Comment comment = commentMapper.commentEntityToComment(commentEntity);
+        comment.setAdId(adId);
+        comment.setAuthor(commentEntity.getUserEntity().getId());
+        //todo добавить аватарку
+        comment.setAuthorImage("image");
+        comment.setAuthorFirstName(commentEntity.getUserEntity().getFirstName());
+        //todo добавить время
+        comment.setCreatedAt(2L);
 
         return Optional.of(comment);
     }

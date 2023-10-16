@@ -25,12 +25,7 @@ public class UserEntity {
     private String lastName;
     private String phone;
     private Role role;
-    private String filePath;
-    private long fileSize;
-    private String mediaType;
-    @Lob
-    @Column(columnDefinition = "oid")
-    private byte[] data;
+
     @OneToMany(mappedBy = "userEntity")
     private Collection<AdEntity> adEntities;
     @OneToMany(mappedBy = "userEntity")

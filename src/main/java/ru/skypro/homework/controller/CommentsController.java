@@ -32,13 +32,15 @@ public class CommentsController {
      * Метод отправляет запрос на сервис в поисках объявления, если такое объявление
      * существует, то возвращает список комментариев к нему.
      */
+
+    //todo добавить unauthentication
     @GetMapping("/{id}/comments")
     public ResponseEntity<Comments> getComments(@PathVariable Integer id) {
         Optional<Comments> comments = commentService.getComments(id);
         if (comments.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(new Comments());
+        return ResponseEntity.status(HttpStatus.OK).body(comments.get());
     }
 
     /**
@@ -49,17 +51,25 @@ public class CommentsController {
      * Метод отправляет запрос на сервис добавить новый комментарий к объявлению.
      */
 
+    //todo убрать authentication
     @PostMapping("/{id}/comments")
     public ResponseEntity<Comment> addComment(@PathVariable Integer id,
                                               @RequestBody CreateOrUpdateComment createOrUpdateComment,
                                               Authentication authentication) {
+
+        if (!authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         String email = authentication.getName();
+
         Optional<Comment> commentOptional = commentService.addComment(id, createOrUpdateComment, email);
         if (commentOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         return ResponseEntity.status(HttpStatus.OK).body(commentOptional.get());
     }
+
 
     /**
      * Удаление комментария.
@@ -69,11 +79,16 @@ public class CommentsController {
      * Метод отправляет запрос на сервис удалить конкретный комментарий к объявлению.
      */
 
+
+    //todo после авторизации сделать запрещено удаялять чужие посты
     @DeleteMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Integer adId,
                                               @PathVariable Integer commentId) {
-        commentService.deleteComment(adId, commentId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        if (commentService.deleteComment(adId, commentId)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     /**
@@ -86,6 +101,7 @@ public class CommentsController {
      * Метод отправляет запрос на сервис изменить конкретный комментарий к объявлению.
      */
 
+    //todo
     @PatchMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<Comment> updateComment(@PathVariable Integer adId,
                                                  @PathVariable Integer commentId,

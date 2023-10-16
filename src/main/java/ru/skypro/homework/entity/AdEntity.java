@@ -22,12 +22,6 @@ public class AdEntity {
     private Integer price;
     private String title;
     private String description;
-    private String filePath;
-    private long fileSize;
-    private String mediaType;
-    @Lob
-    @Column(columnDefinition = "oid")
-    private byte[] data;
     @ManyToOne
     @JoinColumn(name = "user_entity_id")
     private UserEntity userEntity;

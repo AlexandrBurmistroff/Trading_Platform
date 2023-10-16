@@ -8,11 +8,7 @@ CREATE TABLE user_entity (
     first_name          text,
     last_name           text,
     phone               text,
-    role                int4,
-    file_path           text,
-    file_size           bigint,
-    media_type          text,
-    data                oid
+    role                int4
 );
 
 -- changeset grigorii:create-ad_entity-table
@@ -21,12 +17,7 @@ CREATE TABLE ad_entity (
     price               integer,
     title               text,
     description         text,
-    file_path           text,
-    file_size           bigint,
-    media_type          text,
-    data                oid,
-    user_entity_id      int4,
-    ad_entity_id        int4
+    user_entity_id      int4
 );
 
 -- changeset grigorii:create-comment_entity-table
@@ -34,9 +25,7 @@ CREATE TABLE comment_entity (
     pk                  serial PRIMARY KEY,
     text                text,
     created_at          bigint,
-    user_entity_id      int4
+    user_entity_id      int4,
+    ad_entity_id        int4
 );
 
--- changeset KrozhDev:create-comment_entity-table
-ALTER TABLE comment_entity
-ADD ad_entity_id int4 NOT NULL
