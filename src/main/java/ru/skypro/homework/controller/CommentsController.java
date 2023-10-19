@@ -34,11 +34,8 @@ public class CommentsController {
     //todo добавить unauthentication
     @GetMapping("/{id}/comments")
     public ResponseEntity<Comments> getComments(@PathVariable Integer id) {
-        Optional<Comments> comments = commentService.getComments(id);
-        if (comments.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(comments.get());
+        Comments comments = commentService.getComments(id);
+        return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
 
     /**
@@ -60,11 +57,8 @@ public class CommentsController {
 //
 //        String email = authentication.getName();
 
-        Optional<Comment> commentOptional = commentService.addComment(id, createOrUpdateComment);
-//        if (commentOptional.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
-        return ResponseEntity.status(HttpStatus.OK).body(commentOptional.get());
+        Comment commentOptional = commentService.addComment(id, createOrUpdateComment);
+        return ResponseEntity.status(HttpStatus.OK).body(commentOptional);
     }
 
     /**
@@ -79,16 +73,12 @@ public class CommentsController {
     @DeleteMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Integer adId,
                                               @PathVariable Integer commentId) {
-        if (commentService.deleteComment(adId, commentId)) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        commentService.deleteComment(adId, commentId);
+        return ResponseEntity.ok().build();
     }
 
     /**
      * Обновление комментария.
-     *
      * @param adId      - идентификатор объявления.
      * @param commentId - идентификатор комментария.
      * @param createOrUpdateComment - текст измененного комментария.
@@ -101,11 +91,8 @@ public class CommentsController {
     public ResponseEntity<Comment> updateComment(@PathVariable Integer adId,
                                                  @PathVariable Integer commentId,
                                                  @RequestBody CreateOrUpdateComment createOrUpdateComment) {
-        Optional<Comment> comment = commentService.updateComment(adId, commentId, createOrUpdateComment);
-        if (comment.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(comment.get());
+        Comment comment = commentService.updateComment(adId, commentId, createOrUpdateComment);
+        return ResponseEntity.status(HttpStatus.OK).body(comment);
     }
 
 }
