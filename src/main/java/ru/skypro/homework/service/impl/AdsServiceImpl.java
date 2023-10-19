@@ -11,7 +11,7 @@ import ru.skypro.homework.dto.ExtendedAd;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.exception.EntityForbiddenException;
-import ru.skypro.homework.exception.EntityNotFoundExeption;
+import ru.skypro.homework.exception.EntityNotFoundException;
 import ru.skypro.homework.mapper.AdsMapper;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.UserRepository;
@@ -70,7 +70,7 @@ public class AdsServiceImpl implements AdsService {
         UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
 
         if (currentUserEntity.getId() == null) {
-            throw new EntityNotFoundExeption();
+            throw new EntityNotFoundException();
         } else {
             newAdEntity.setUserEntity(currentUserEntity);
             AdEntity savedAdEntity = adRepository.save(newAdEntity);
@@ -96,7 +96,7 @@ public class AdsServiceImpl implements AdsService {
 
         if (checkForExistAd.isEmpty()) {
             log.error("Ad not founded");
-            throw new EntityNotFoundExeption();
+            throw new EntityNotFoundException();
         } else {
             AdEntity foundedAdEntity = checkForExistAd.get();
             return adsMapper.adEntityToExtendedAd(foundedAdEntity);
@@ -116,7 +116,7 @@ public class AdsServiceImpl implements AdsService {
         UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
         if (checkForExistAd.isEmpty() && currentUserEntity == null) {
             log.error("Ad not founded");
-            throw new EntityNotFoundExeption();
+            throw new EntityNotFoundException();
         } else {
             if (!currentUserEntity.getId().equals(checkForExistAd.get().getUserEntity().getId())) {
                 throw new EntityForbiddenException();
@@ -140,7 +140,7 @@ public class AdsServiceImpl implements AdsService {
         UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
         if (checkForExistAd.isEmpty() && currentUserEntity == null) {
             log.error("Ad not founded");
-            throw new EntityNotFoundExeption();
+            throw new EntityNotFoundException();
         } else {
             AdEntity foundedAdEntity = checkForExistAd.get();
             if (currentUserEntity.getId().equals(checkForExistAd.get().getUserEntity().getId())) {
@@ -191,7 +191,7 @@ public class AdsServiceImpl implements AdsService {
         UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
         if (checkForExistAd.isEmpty() && currentUserEntity == null) {
             log.error("Ad not founded");
-            throw new EntityNotFoundExeption();
+            throw new EntityNotFoundException();
         } else {
             if (currentUserEntity.getId().equals(checkForExistAd.get().getUserEntity().getId())) {
                 byte[] image = new byte[0];
