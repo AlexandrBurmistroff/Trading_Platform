@@ -11,8 +11,6 @@ import ru.skypro.homework.dto.Comments;
 import ru.skypro.homework.dto.CreateOrUpdateComment;
 import ru.skypro.homework.service.CommentService;
 
-import java.util.Optional;
-
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
@@ -24,7 +22,6 @@ public class CommentsController {
 
     /**
      * Получение комментариев объявления.
-     *
      * @param id - идентификатор объявления.
      * @return ResponseEntity.
      * Метод отправляет запрос на сервис в поисках объявления, если такое объявление

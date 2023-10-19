@@ -16,6 +16,7 @@ import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.util.UserAuthentication;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.Collection;
@@ -25,6 +26,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
@@ -69,16 +71,18 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Comment addComment(Integer id, CreateOrUpdateComment createOrUpdateComment) {
         UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
-        Optional<UserEntity> userEntityOptional = Optional.of(currentUserEntity);
-        UserEntity userEntity = userEntityOptional.orElseThrow(() -> new EntityNotFoundException("Пользователь не найден"));
+
+        if (currentUserEntity.getId() == null) {
+            throw new EntityNotFoundException("Пользователь не найден");
+        }
 
         Optional<AdEntity> adEntityOptional = adRepository.findById(id);
         AdEntity adEntity = adEntityOptional.orElseThrow(() -> new EntityNotFoundException("Объявление не найдено"));
 
         CommentEntity commentEntity = commentMapper.createOrUpdateCommentToCommentEntity(createOrUpdateComment);
         commentEntity.setAdEntity(adEntity);
-        commentEntity.setUserEntity(userEntity);
-        commentEntity.setCreatedAt(LocalDateTime.now().getLong(ChronoField.EPOCH_DAY));
+        commentEntity.setUserEntity(currentUserEntity);
+        commentEntity.setCreatedAt(LocalDateTime.now());
         commentRepository.save(commentEntity);
 
         return commentMapper.commentEntityToComment(commentEntity);
@@ -126,7 +130,7 @@ public class CommentServiceImpl implements CommentService {
         CommentEntity commentEntity = commentEntityOptional.get();
         CommentEntity commentEntityMapper = commentMapper.createOrUpdateCommentToCommentEntity(createOrUpdateComment);
         commentEntity.setText(commentEntityMapper.getText());
-        commentEntity.setCreatedAt(LocalDateTime.now().getLong(ChronoField.EPOCH_DAY));
+        commentEntity.setCreatedAt(LocalDateTime.now());
         commentRepository.save(commentEntity);
 
         return commentMapper.commentEntityToComment(commentEntity);
