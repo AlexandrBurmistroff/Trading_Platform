@@ -22,8 +22,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean login(String userName, String password) {
+        // проверка юзера по базе
+        // добавить юзера в менеджер
         if (!manager.userExists(userName)) {
-            return false;
+            return false; //
         }
         UserDetails userDetails = manager.loadUserByUsername(userName);
         return encoder.matches(password, userDetails.getPassword());
@@ -31,6 +33,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean register(Register register) {
+        // добавить юзера в базу
         if (manager.userExists(register.getUsername())) {
             return false;
         }

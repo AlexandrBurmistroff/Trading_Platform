@@ -2,11 +2,12 @@ package ru.skypro.homework.service;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.dto.Ads;
 import ru.skypro.homework.dto.CreateOrUpdateAd;
 
 public interface AdsService {
 
-    ResponseEntity<?> getAllAds();
+    Ads getAllAds();
 
     ResponseEntity<?> addAd(CreateOrUpdateAd properties, MultipartFile image);
 

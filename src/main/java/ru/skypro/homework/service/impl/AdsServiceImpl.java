@@ -18,6 +18,7 @@ import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.util.UserAuthentication;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -44,7 +45,7 @@ public class AdsServiceImpl implements AdsService {
      * @return возвращает ResponsEntity status с Ads Dto.
      */
     @Override
-    public ResponseEntity<?> getAllAds() {
+    public Ads getAllAds() {
         List<AdEntity> adEntityList = adRepository.findAll();
         List<Ad> adList = adsMapper.adEntityListToAdList(adEntityList);
         Integer sizeList = adList.size();
@@ -52,7 +53,7 @@ public class AdsServiceImpl implements AdsService {
         Ads ads = new Ads();
         ads.setCount(sizeList);
         ads.setResults(adList);
-        return new ResponseEntity<>(ads, HttpStatus.OK);
+        return ads;
     }
 
     /**
@@ -72,12 +73,12 @@ public class AdsServiceImpl implements AdsService {
         } else {
             newAdEntity.setUserEntity(currentUserEntity);
             AdEntity savedAdEntity = adRepository.save(newAdEntity);
-
             try {
                 imageService.uploadAdImage(savedAdEntity.getPk(), image);
             } catch (IOException e) {
                 log.error("Image not uploaded");
             }
+
             return new ResponseEntity<>(adsMapper.adEntityToAd(savedAdEntity), HttpStatus.CREATED);
         }
     }
@@ -167,7 +168,8 @@ public class AdsServiceImpl implements AdsService {
      * @return возвращает ResponsEntity status с Ads Dto.
      */
     @Override
-    public ResponseEntity<?> getAdsMe() { // TODO: 15.10.2023 выкидывает PSQLException
+    @Transactional
+    public ResponseEntity<?> getAdsMe() {
         UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
 
         if (currentUserEntity != null) {
