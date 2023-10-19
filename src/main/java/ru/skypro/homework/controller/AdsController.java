@@ -2,11 +2,15 @@ package ru.skypro.homework.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.dto.Ad;
+import ru.skypro.homework.dto.Ads;
 import ru.skypro.homework.dto.CreateOrUpdateAd;
+import ru.skypro.homework.dto.ExtendedAd;
 import ru.skypro.homework.service.AdsService;
 
 @Slf4j
@@ -24,8 +28,8 @@ public class AdsController {
      * @return возвращает ResponsEntity.
      */
     @GetMapping
-    public ResponseEntity<?> getAllAds() {
-        return adsService.getAllAds();
+    public ResponseEntity<Ads> getAllAds() {
+        return new ResponseEntity<>(adsService.getAllAds(), HttpStatus.OK);
     }
 
     /**
@@ -36,9 +40,9 @@ public class AdsController {
      * @return возвращает ResponsEntity.
      */
     @PostMapping
-    public ResponseEntity<?> addAd(@RequestPart("properties") CreateOrUpdateAd properties,
-                                   @RequestPart("image") MultipartFile image) {
-        return adsService.addAd(properties, image);
+    public ResponseEntity<Ad> addAd(@RequestPart("properties") CreateOrUpdateAd properties,
+                                    @RequestPart("image") MultipartFile image) {
+        return new ResponseEntity<>(adsService.addAd(properties, image), HttpStatus.CREATED);
     }
 
     /**
@@ -48,8 +52,8 @@ public class AdsController {
      * @return возвращает ResponsEntity.
      */
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> getAds(@PathVariable Integer id) {
-        return adsService.getAds(id);
+    public ResponseEntity<ExtendedAd> getAds(@PathVariable Integer id) {
+        return new ResponseEntity<>(adsService.getAds(id), HttpStatus.OK);
     }
 
     /**
@@ -59,8 +63,9 @@ public class AdsController {
      * @return возвращает ResponsEntity.
      */
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> removeAd(@PathVariable Integer id) {
-        return adsService.removeAd(id);
+    public ResponseEntity<Void> removeAd(@PathVariable Integer id) {
+        adsService.removeAd(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**
@@ -71,17 +76,17 @@ public class AdsController {
      * @return DTO Ad. Включает author, image, pk, price и title объявления.
      */
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<?> updateAds(@PathVariable Integer id,
+    public ResponseEntity<Ad> updateAds(@PathVariable Integer id,
                                         @RequestBody CreateOrUpdateAd createOrUpdateAd) {
-        return adsService.updateAds(id, createOrUpdateAd);
+        return new ResponseEntity<>(adsService.updateAds(id, createOrUpdateAd), HttpStatus.OK);
     }
 
     /**
      * @return возвращает объявления авторизованного пользователя.
      */
-    @GetMapping(value = "/me") // TODO: 15.10.2023 выкидывает PSQLException
-    public ResponseEntity<?> getAdsMe() {
-        return adsService.getAdsMe();
+    @GetMapping(value = "/me")
+    public ResponseEntity<Ads> getAdsMe() {
+        return new ResponseEntity<>(adsService.getAdsMe(), HttpStatus.OK);
     }
 
     /**
@@ -92,8 +97,8 @@ public class AdsController {
      * @return бинарный код изображения.
      */
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> updateImage(@PathVariable Integer id,
-                                         @RequestParam("image") MultipartFile file) {
-        return adsService.updateImage(id, file);
+    public ResponseEntity<byte[]> updateImage(@PathVariable Integer id,
+                                              @RequestParam("image") MultipartFile file) {
+        return new ResponseEntity<>(adsService.updateImage(id, file), HttpStatus.OK);
     }
 }
