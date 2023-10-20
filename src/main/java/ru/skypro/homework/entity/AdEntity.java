@@ -25,9 +25,9 @@ public class AdEntity {
     @JoinColumn(name = "user_entity_id")
     private UserEntity userEntity;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
     private ImageEntity imageEntity;
 
-    @OneToMany(mappedBy = "adEntity")
+    @OneToMany(mappedBy = "adEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Collection<CommentEntity> commentEntities;
 }

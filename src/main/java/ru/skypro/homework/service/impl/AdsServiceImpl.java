@@ -124,7 +124,6 @@ public class AdsServiceImpl implements AdsService {
                 adRepository.deleteById(adPk);
             }
         }
-        // TODO: 15.10.2023 не удаляется фото
     }
 
     /**
@@ -206,4 +205,5 @@ public class AdsServiceImpl implements AdsService {
             }
         }
     }
+
 }
