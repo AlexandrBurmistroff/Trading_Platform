@@ -11,6 +11,7 @@ import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.exception.EntityNotFoundException;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.repository.UserRepository;
+import ru.skypro.homework.service.AuthService;
 import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.service.UsersService;
 import ru.skypro.homework.util.UserAuthentication;
@@ -34,6 +35,8 @@ public class UsersServiceImpl implements UsersService {
 
     private final UserAuthentication userAuthentication;
 
+    private final AuthService authService;
+
 
     /**
      * Метод, который сравнивает значения текущего пароля с новым
@@ -41,11 +44,10 @@ public class UsersServiceImpl implements UsersService {
      * @return true, если текущий пароль не совпадает с новым паролем; false, если пароли одинаковые
      */
     @Override
-    public boolean setPassword(NewPassword newPassword) { // TODO: 14.10.2023 требуется дороботка
-        UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
-        //.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        // если текущий пароль не совпадает с новым паролем, то изменить, затем сохранить новый пароль в БД и вернуть true
-        return false;
+    public void setPassword(NewPassword newPassword) { // TODO: 14.10.2023 требуется дороботка
+        authService.updatePassword(newPassword.getCurrentPassword(), newPassword.getNewPassword());
+        UserEntity userEntity = userAuthentication.getCurrentUserName();
+        System.out.println(userEntity.getPassword());
     }
 
     /**

@@ -7,7 +7,7 @@ import ru.skypro.homework.dto.User;
 
 public interface UsersService {
 
-    boolean setPassword(NewPassword newPassword);
+    void setPassword(NewPassword newPassword);
 
     User getUser();
 
