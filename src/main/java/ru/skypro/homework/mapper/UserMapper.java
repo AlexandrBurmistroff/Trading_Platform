@@ -16,4 +16,7 @@ public interface UserMapper {
     @Mapping(source = "imageEntity.filePath", target = "image")
     User userEntityToUser(UserEntity userEntity);
 
+    @Mapping(source = "email", target = "username")
+    @Mapping(source = "image", target = "imageEntity.filePath")
+    UserEntity userToUserEntity(User user);
 }
