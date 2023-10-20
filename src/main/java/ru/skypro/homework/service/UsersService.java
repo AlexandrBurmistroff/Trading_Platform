@@ -11,8 +11,8 @@ public interface UsersService {
 
     User getUser();
 
-    boolean updateUser(UpdateUser updateUser);
+    UpdateUser updateUser(UpdateUser updateUser);
 
-    boolean updateUserImage(MultipartFile file);
+    void updateUserImage(MultipartFile file);
 
 }

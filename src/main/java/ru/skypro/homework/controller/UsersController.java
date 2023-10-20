@@ -29,12 +29,11 @@ public class UsersController {
      */
     @PostMapping("/set_password")
     public ResponseEntity<Void> setPassword(@RequestBody NewPassword newPassword) { // TODO: 14.10.2023 требуется дороботка
-        if (usersService.setPassword(newPassword)) {
-            //если новый пароль не совпадает с текущим паролем и записал в БД, то вернуть статус 200
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }
+        usersService.setPassword(newPassword);
+        return new ResponseEntity<>(HttpStatus.OK);
+
         //если новый пароль совпадает с текущим паролем, то вернуть статус ошибки 403(типо бесполезно поворять с тем же запросом)
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        //return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     /**
@@ -44,11 +43,7 @@ public class UsersController {
      */
     @GetMapping("/me")
     public ResponseEntity<User> getUser() {
-        User user = usersService.getUser();
-        if (user.getEmail() == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(user);
+        return new ResponseEntity<>(usersService.getUser(), HttpStatus.OK);
     }
 
     /**
@@ -59,10 +54,7 @@ public class UsersController {
      */
     @PatchMapping("/me")
     public ResponseEntity<UpdateUser> updateUser(@RequestBody UpdateUser updateUser) {
-        if (usersService.updateUser(updateUser)) {
-            return ResponseEntity.status(HttpStatus.OK).body(updateUser);
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return new ResponseEntity<>(usersService.updateUser(updateUser), HttpStatus.OK);
     }
 
     /**
@@ -73,9 +65,7 @@ public class UsersController {
      */
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateUserImage(@RequestParam("image") MultipartFile file) {
-        if (usersService.updateUserImage(file)) {
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        usersService.updateUserImage(file);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
