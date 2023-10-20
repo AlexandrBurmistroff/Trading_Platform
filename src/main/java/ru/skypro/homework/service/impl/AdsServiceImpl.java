@@ -128,8 +128,6 @@ public class AdsServiceImpl implements AdsService {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
         }
-        // TODO: 15.10.2023 не удаляется фото
-        // TODO: 15.10.2023 добавить HttpStatus.FORBIDDEN
     }
 
     /**
@@ -159,7 +157,6 @@ public class AdsServiceImpl implements AdsService {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
         }
-        // TODO: 15.10.2023 добавить HttpStatus.FORBIDDEN
     }
 
     /**
@@ -218,7 +215,6 @@ public class AdsServiceImpl implements AdsService {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
         }
-        // TODO: 15.10.2023 добавить HttpStatus.FORBIDDEN
     }
 
 }

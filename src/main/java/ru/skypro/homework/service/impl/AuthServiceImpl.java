@@ -1,39 +1,54 @@
 package ru.skypro.homework.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
+import ru.skypro.homework.dto.Login;
 import ru.skypro.homework.dto.Register;
+import ru.skypro.homework.entity.UserEntity;
+import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AuthService;
 
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
     private final UserDetailsManager manager;
+
     private final PasswordEncoder encoder;
 
-    public AuthServiceImpl(UserDetailsManager manager,
-                           PasswordEncoder passwordEncoder) {
-        this.manager = manager;
-        this.encoder = passwordEncoder;
-    }
+    private final UserRepository userRepository;
 
     @Override
     public boolean login(String userName, String password) {
-        // проверка юзера по базе
-        // добавить юзера в менеджер
-        if (!manager.userExists(userName)) {
-            return false; //
+        UserEntity userExistsCheck = userRepository.findByUsername(userName);
+        if (userExistsCheck != null && userExistsCheck.getUsername().equals(userName)
+                && userExistsCheck.getPassword().equals(password)) {
+            UserDetails userDetails = manager.loadUserByUsername(userName);
+            return encoder.matches(password, userDetails.getPassword());
+        } else {
+            return false;
         }
-        UserDetails userDetails = manager.loadUserByUsername(userName);
-        return encoder.matches(password, userDetails.getPassword());
     }
 
     @Override
     public boolean register(Register register) {
-        // добавить юзера в базу
+        UserEntity userExistsCheck = userRepository.findByUsername(register.getUsername());
+        if (userExistsCheck == null) {
+            UserEntity newUserEntity = UserEntity.builder()
+                    .username(register.getUsername())
+                    .password(register.getPassword())
+                    .firstName(register.getFirstName())
+                    .lastName(register.getLastName())
+                    .phone(register.getPhone())
+                    .role(register.getRole())
+                    .build();
+            userRepository.save(newUserEntity);
+        }
+
         if (manager.userExists(register.getUsername())) {
             return false;
         }
