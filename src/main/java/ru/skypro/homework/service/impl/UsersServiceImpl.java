@@ -47,7 +47,7 @@ public class UsersServiceImpl implements UsersService {
     public void setPassword(NewPassword newPassword) { // TODO: 14.10.2023 требуется дороботка
         authService.updatePassword(newPassword.getCurrentPassword(), newPassword.getNewPassword());
         UserEntity userEntity = userAuthentication.getCurrentUserName();
-        System.out.println(userEntity.getPassword());
+        //добавить 403 статус
     }
 
     /**

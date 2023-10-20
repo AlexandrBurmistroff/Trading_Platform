@@ -31,9 +31,6 @@ public class UsersController {
     public ResponseEntity<Void> setPassword(@RequestBody NewPassword newPassword) { // TODO: 14.10.2023 требуется дороботка
         usersService.setPassword(newPassword);
         return new ResponseEntity<>(HttpStatus.OK);
-
-        //если новый пароль совпадает с текущим паролем, то вернуть статус ошибки 403(типо бесполезно поворять с тем же запросом)
-        //return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     /**
