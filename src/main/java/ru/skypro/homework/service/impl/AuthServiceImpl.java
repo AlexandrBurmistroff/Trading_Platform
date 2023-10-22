@@ -11,6 +11,7 @@ import ru.skypro.homework.dto.Register;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AuthService;
+import ru.skypro.homework.util.UserAuthentication;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,8 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder encoder;
 
     private final UserRepository userRepository;
+
+    private final UserAuthentication userAuthentication;
 
     @Override
     public boolean login(String userName, String password) {
@@ -60,6 +63,17 @@ public class AuthServiceImpl implements AuthService {
                         .roles(register.getRole().name())
                         .build());
         return true;
+    }
+
+    @Override
+    public void updatePassword(String oldPassword, String newPassword) {
+        UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
+        UserEntity foundedUser = userRepository.findByUsername(currentUserEntity.getUsername());
+
+        foundedUser.setPassword(newPassword);
+        userRepository.save(foundedUser);
+
+        manager.changePassword(oldPassword, newPassword);
     }
 
 }

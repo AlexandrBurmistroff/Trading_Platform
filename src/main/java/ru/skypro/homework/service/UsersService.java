@@ -7,12 +7,12 @@ import ru.skypro.homework.dto.User;
 
 public interface UsersService {
 
-    boolean setPassword(NewPassword newPassword);
+    void setPassword(NewPassword newPassword);
 
     User getUser();
 
-    boolean updateUser(UpdateUser updateUser);
+    UpdateUser updateUser(UpdateUser updateUser);
 
-    boolean updateUserImage(MultipartFile file);
+    void updateUserImage(MultipartFile file);
 
 }
