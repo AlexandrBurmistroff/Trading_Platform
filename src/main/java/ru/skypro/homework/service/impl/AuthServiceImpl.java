@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.skypro.homework.config.CustomUserDetailsServiceImpl;
 import ru.skypro.homework.dto.Register;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.repository.UserRepository;
@@ -15,7 +16,7 @@ import ru.skypro.homework.service.AuthService;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final UserDetailsServiceImpl userDetailsService;
+    private final CustomUserDetailsServiceImpl userDetailsService;
 
     private final PasswordEncoder encoder;
 
@@ -24,7 +25,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean login(String userName, String password) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-        return encoder.matches(password, userDetails.getPassword());
+        if (encoder.matches(password, userDetails.getPassword())) {
+            return true;
+        } else {
+            log.error("Invalid user password {} already exist", password);
+            return false;
+        }
     }
 
     @Override
