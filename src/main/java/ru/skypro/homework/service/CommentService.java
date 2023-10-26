@@ -11,7 +11,7 @@ public interface CommentService {
     Comment addComment(Integer id, CreateOrUpdateComment createOrUpdateComment);
 
     @CanDeleteOrUpdate
-    boolean deleteComment(Integer id, Integer commentId);
+    void deleteComment(Integer id, Integer commentId);
 
     @CanDeleteOrUpdate
     Comment updateComment(Integer adId, Integer commentId, CreateOrUpdateComment createOrUpdateComment);

@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.Ad;
-import ru.skypro.homework.dto.Ads;
-import ru.skypro.homework.dto.CreateOrUpdateAd;
-import ru.skypro.homework.dto.ExtendedAd;
+import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.exception.EntityForbiddenException;
@@ -118,10 +115,11 @@ public class AdsServiceImpl implements AdsService {
             log.error("Ad not founded");
             throw new EntityNotFoundException();
         } else {
-            if (!currentUserEntity.getId().equals(checkForExistAd.get().getUserEntity().getId())) {
-                throw new EntityForbiddenException();
-            } else {
+            if (currentUserEntity.getId().equals(checkForExistAd.get().getUserEntity().getId()) ||
+            currentUserEntity.getRole().equals(Role.ADMIN)) {
                 adRepository.deleteById(adPk);
+            } else {
+                throw new EntityForbiddenException();
             }
         }
     }
@@ -137,12 +135,14 @@ public class AdsServiceImpl implements AdsService {
     public Ad updateAds(Integer adPk, CreateOrUpdateAd createOrUpdateAd) {
         Optional<AdEntity> checkForExistAd = adRepository.findById(adPk);
         UserEntity currentUserEntity = userAuthentication.getCurrentUser();
+
         if (checkForExistAd.isEmpty() && currentUserEntity == null) {
             log.error("Ad not founded");
             throw new EntityNotFoundException();
         } else {
             AdEntity foundedAdEntity = checkForExistAd.get();
-            if (currentUserEntity.getId().equals(checkForExistAd.get().getUserEntity().getId())) {
+            if (currentUserEntity.getId().equals(checkForExistAd.get().getUserEntity().getId()) ||
+                    currentUserEntity.getRole().equals(Role.ADMIN)) {
                 AdEntity updatedAdEntity = adsMapper.createOrUpdateAdToAdEntity(createOrUpdateAd);
                 updatedAdEntity.setPk(foundedAdEntity.getPk());
                 updatedAdEntity.setUserEntity(foundedAdEntity.getUserEntity());
@@ -192,7 +192,8 @@ public class AdsServiceImpl implements AdsService {
             log.error("Ad not founded");
             throw new EntityNotFoundException();
         } else {
-            if (currentUserEntity.getId().equals(checkForExistAd.get().getUserEntity().getId())) {
+            if (currentUserEntity.getId().equals(checkForExistAd.get().getUserEntity().getId()) ||
+                    currentUserEntity.getRole().equals(Role.ADMIN)) {
                 byte[] image = new byte[0];
                 try {
                     image = imageService.uploadAdImage(adPk, file);

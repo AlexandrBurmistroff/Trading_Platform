@@ -63,7 +63,7 @@ public class CommentsController {
     public ResponseEntity<Void> deleteComment(@PathVariable Integer adId,
                                               @PathVariable Integer commentId) {
         commentService.deleteComment(adId, commentId);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**

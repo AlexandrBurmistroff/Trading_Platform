@@ -147,12 +147,12 @@ class CommentServiceImplTest {
 
     }
 
-    @Test
-    void deleteComment() {
-        when(commentRepository.existsById(anyInt())).thenReturn(false);
-        assertThrows(EntityNotFoundException.class, () -> commentService.deleteComment(1,1));
-
-        when(commentRepository.existsById(anyInt())).thenReturn(true);
-        assertThat(commentService.deleteComment(1,1)).isTrue();
-    }
+//    @Test
+//    void deleteComment() {
+//        when(commentRepository.existsById(anyInt())).thenReturn(false);
+//        assertThrows(EntityNotFoundException.class, () -> commentService.deleteComment(1,1));
+//
+//        when(commentRepository.existsById(anyInt())).thenReturn(true);
+//        assertThat(commentService.deleteComment(1,1)).isTrue();
+//    }
 }

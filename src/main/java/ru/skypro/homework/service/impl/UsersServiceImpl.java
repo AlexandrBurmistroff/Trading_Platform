@@ -50,9 +50,8 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public void setPassword(NewPassword newPassword) {
         UserEntity user = userAuthentication.getCurrentUser();
-        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
 
-        if (!encoder.matches(newPassword.getCurrentPassword(), userDetails.getPassword())) {
+        if (!encoder.matches(newPassword.getCurrentPassword(), user.getPassword())) {
             throw new PasswordValidationException("Password validation failed");
         }
 

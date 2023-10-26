@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.Comment;
 import ru.skypro.homework.dto.Comments;
 import ru.skypro.homework.dto.CreateOrUpdateComment;
+import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.CommentEntity;
 import ru.skypro.homework.entity.UserEntity;
+import ru.skypro.homework.exception.EntityForbiddenException;
 import ru.skypro.homework.exception.EntityNotFoundException;
 import ru.skypro.homework.mapper.CommentMapper;
 import ru.skypro.homework.repository.AdRepository;
@@ -95,12 +97,20 @@ public class CommentServiceImpl implements CommentService {
      * @throws NullPointerException если объявление не найдено
      */
     @Override
-    public boolean deleteComment(Integer id, Integer commentId) {
-        if (commentRepository.existsById(commentId)) {
-            commentRepository.deleteById(commentId);
-            return true;
+    public void deleteComment(Integer id, Integer commentId) {
+        UserEntity currentUserEntity = userAuthentication.getCurrentUser();
+        Optional<CommentEntity> commentEntityOptional = getCommentFromAd(id, commentId);
+
+        if (commentEntityOptional.isEmpty() && currentUserEntity == null) {
+            throw new EntityNotFoundException("Комментарий не найден");
+        } else {
+            if (currentUserEntity.getId().equals(commentEntityOptional.get().getUserEntity().getId()) ||
+                    currentUserEntity.getRole().equals(Role.ADMIN)) {
+                commentRepository.deleteById(commentId);
+            } else {
+                throw new EntityForbiddenException();
+            }
         }
-        throw new EntityNotFoundException("Комментарий не найден");
     }
 
     /**
@@ -114,24 +124,32 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public Comment updateComment(Integer adId, Integer commentId, CreateOrUpdateComment createOrUpdateComment) {
+        UserEntity currentUserEntity = userAuthentication.getCurrentUser();
+        Optional<CommentEntity> commentEntityOptional = getCommentFromAd(adId, commentId);
 
+        if (commentEntityOptional.isEmpty() && currentUserEntity == null) {
+            throw new EntityNotFoundException("Комментарий не найден");
+        } else {
+            if (currentUserEntity.getId().equals(commentEntityOptional.get().getUserEntity().getId()) ||
+                    currentUserEntity.getRole().equals(Role.ADMIN)) {
+                CommentEntity commentEntity = commentEntityOptional.get();
+                CommentEntity commentEntityMapper = commentMapper.createOrUpdateCommentToCommentEntity(createOrUpdateComment);
+                commentEntity.setText(commentEntityMapper.getText());
+                commentEntity.setCreatedAt(LocalDateTime.now());
+                commentRepository.save(commentEntity);
+                return commentMapper.commentEntityToComment(commentEntity);
+            } else {
+                throw new EntityForbiddenException();
+            }
+        }
+    }
+
+    private Optional<CommentEntity> getCommentFromAd(Integer adId, Integer commentId) {
         Optional<AdEntity> adEntityOptional = adRepository.findById(adId);
-
-        Optional<CommentEntity> commentEntityOptional = adEntityOptional.orElseThrow(() -> new EntityNotFoundException("Объявление не найдено"))
+        return adEntityOptional.orElseThrow(() -> new EntityNotFoundException("Объявление не найдено"))
                 .getCommentEntities().stream()
                 .filter(Objects::nonNull)
                 .filter(commentEntity1 -> commentEntity1.getPk().equals(commentId))
                 .findFirst();
-
-        if (commentEntityOptional.isEmpty()) {
-            throw new EntityNotFoundException("Комментарий не найден");
-        }
-        CommentEntity commentEntity = commentEntityOptional.get();
-        CommentEntity commentEntityMapper = commentMapper.createOrUpdateCommentToCommentEntity(createOrUpdateComment);
-        commentEntity.setText(commentEntityMapper.getText());
-        commentEntity.setCreatedAt(LocalDateTime.now());
-        commentRepository.save(commentEntity);
-
-        return commentMapper.commentEntityToComment(commentEntity);
     }
 }
