@@ -48,12 +48,6 @@ public class CommentsController {
     public ResponseEntity<Comment> addComment(@PathVariable Integer id,
                                               @RequestBody CreateOrUpdateComment createOrUpdateComment) {
 
-//        if (!authentication.isAuthenticated()) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//
-//        String email = authentication.getName();
-
         Comment commentOptional = commentService.addComment(id, createOrUpdateComment);
         return ResponseEntity.status(HttpStatus.OK).body(commentOptional);
     }
