@@ -128,11 +128,11 @@ class CommentServiceImplTest {
                 .createdAt(time.toString())
                 .build();
 
-        when(userAuthentication.getCurrentUserName()).thenReturn(null);
+        when(userAuthentication.getCurrentUser()).thenReturn(null);
         assertThrows(NullPointerException.class, () -> commentService.addComment(1, createOrUpdateComment));
         assertThrows(EntityNotFoundException.class, () -> commentService.updateComment(1,1, createOrUpdateComment));
 
-        when(userAuthentication.getCurrentUserName()).thenReturn(userEntity);
+        when(userAuthentication.getCurrentUser()).thenReturn(userEntity);
         when(adRepository.findById(anyInt())).thenReturn(Optional.of(adEntity));
 
         CommentEntity commentEntity3 = new CommentEntity(3, "comment3", time, userEntity, adEntity);
