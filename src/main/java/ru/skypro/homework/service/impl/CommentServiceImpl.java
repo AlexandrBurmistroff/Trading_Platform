@@ -18,7 +18,6 @@ import ru.skypro.homework.util.UserAuthentication;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoField;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -70,7 +69,7 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public Comment addComment(Integer id, CreateOrUpdateComment createOrUpdateComment) {
-        UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
+        UserEntity currentUserEntity = userAuthentication.getCurrentUser();
 
         if (currentUserEntity.getId() == null) {
             throw new EntityNotFoundException("Пользователь не найден");

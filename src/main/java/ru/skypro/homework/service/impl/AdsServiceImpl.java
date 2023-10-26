@@ -67,7 +67,7 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public Ad addAd(CreateOrUpdateAd properties, MultipartFile image) {
         AdEntity newAdEntity = adsMapper.createOrUpdateAdToAdEntity(properties);
-        UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
+        UserEntity currentUserEntity = userAuthentication.getCurrentUser();
 
         if (currentUserEntity.getId() == null) {
             throw new EntityNotFoundException();
@@ -113,7 +113,7 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public void removeAd(Integer adPk) {
         Optional<AdEntity> checkForExistAd = adRepository.findById(adPk);
-        UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
+        UserEntity currentUserEntity = userAuthentication.getCurrentUser();
         if (checkForExistAd.isEmpty() && currentUserEntity == null) {
             log.error("Ad not founded");
             throw new EntityNotFoundException();
@@ -136,7 +136,7 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public Ad updateAds(Integer adPk, CreateOrUpdateAd createOrUpdateAd) {
         Optional<AdEntity> checkForExistAd = adRepository.findById(adPk);
-        UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
+        UserEntity currentUserEntity = userAuthentication.getCurrentUser();
         if (checkForExistAd.isEmpty() && currentUserEntity == null) {
             log.error("Ad not founded");
             throw new EntityNotFoundException();
@@ -163,7 +163,7 @@ public class AdsServiceImpl implements AdsService {
     @Override
     @Transactional
     public Ads getAdsMe() {
-        UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
+        UserEntity currentUserEntity = userAuthentication.getCurrentUser();
 
         Collection<AdEntity> adEntityList = userRepository.findById(currentUserEntity.getId())
                 .map(UserEntity::getAdEntities)
@@ -187,7 +187,7 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public byte[] updateImage(Integer adPk, MultipartFile file) {
         Optional<AdEntity> checkForExistAd = adRepository.findById(adPk);
-        UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
+        UserEntity currentUserEntity = userAuthentication.getCurrentUser();
         if (checkForExistAd.isEmpty() && currentUserEntity == null) {
             log.error("Ad not founded");
             throw new EntityNotFoundException();
