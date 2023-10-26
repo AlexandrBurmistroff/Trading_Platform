@@ -17,7 +17,7 @@ public class UserAuthentication {
      * Приватный метод, который вытаскивает имя авторизованного пользователя
      * @return имя авторизованного пользователя
      */
-    public UserEntity getCurrentUserName() {
+    public UserEntity getCurrentUser() {
         Authentication authenticationUser = SecurityContextHolder.getContext().getAuthentication();
         return userRepository.findByUsername(authenticationUser.getName());
     }

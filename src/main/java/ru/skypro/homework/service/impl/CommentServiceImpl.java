@@ -69,7 +69,7 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public Comment addComment(Integer id, CreateOrUpdateComment createOrUpdateComment) {
-        UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
+        UserEntity currentUserEntity = userAuthentication.getCurrentUser();
 
         if (currentUserEntity.getId() == null) {
             throw new EntityNotFoundException("Пользователь не найден");

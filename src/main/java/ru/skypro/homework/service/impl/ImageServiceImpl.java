@@ -45,7 +45,7 @@ public class ImageServiceImpl implements ImageService {
      */
     @Override
     public void uploadUserImage(MultipartFile file) throws IOException {
-        UserEntity user = userAuthentication.getCurrentUserName();
+        UserEntity user = userAuthentication.getCurrentUser();
 
         Path filePath = Path.of(imageDir, user + "." + getExtensions(file.getOriginalFilename()));
         imageStream(filePath, file);

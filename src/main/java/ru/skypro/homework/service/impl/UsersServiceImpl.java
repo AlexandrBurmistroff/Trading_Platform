@@ -2,16 +2,19 @@ package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.config.CustomUserDetailsServiceImpl;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.User;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.exception.EntityNotFoundException;
+import ru.skypro.homework.exception.PasswordValidationException;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.repository.UserRepository;
-import ru.skypro.homework.service.AuthService;
 import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.service.UsersService;
 import ru.skypro.homework.util.UserAuthentication;
@@ -35,8 +38,9 @@ public class UsersServiceImpl implements UsersService {
 
     private final UserAuthentication userAuthentication;
 
-    private final AuthService authService;
+    private final CustomUserDetailsServiceImpl userDetailsService;
 
+    private final PasswordEncoder encoder;
 
     /**
      * Метод, который сравнивает значения текущего пароля с новым
@@ -44,10 +48,17 @@ public class UsersServiceImpl implements UsersService {
      * @return true, если текущий пароль не совпадает с новым паролем; false, если пароли одинаковые
      */
     @Override
-    public void setPassword(NewPassword newPassword) { // TODO: 14.10.2023 требуется дороботка
-        authService.updatePassword(newPassword.getCurrentPassword(), newPassword.getNewPassword());
-        UserEntity userEntity = userAuthentication.getCurrentUserName();
-        //добавить 403 статус
+    public void setPassword(NewPassword newPassword) {
+        UserEntity user = userAuthentication.getCurrentUser();
+        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+
+        if (!encoder.matches(newPassword.getCurrentPassword(), userDetails.getPassword())) {
+            throw new PasswordValidationException("Password validation failed");
+        }
+
+        String encodedNewPassword = encoder.encode(newPassword.getNewPassword());
+        user.setPassword(encodedNewPassword);
+        userRepository.save(user);
     }
 
     /**
@@ -56,7 +67,7 @@ public class UsersServiceImpl implements UsersService {
      */
     @Override
     public User getUser() {
-        UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
+        UserEntity currentUserEntity = userAuthentication.getCurrentUser();
         if (currentUserEntity == null) {
             throw new EntityNotFoundException();
         }
@@ -70,7 +81,7 @@ public class UsersServiceImpl implements UsersService {
      */
     @Override
     public UpdateUser updateUser(UpdateUser updateUser) {
-        UserEntity currentUserEntity = userAuthentication.getCurrentUserName();
+        UserEntity currentUserEntity = userAuthentication.getCurrentUser();
 
         if (currentUserEntity.getUsername().isEmpty()) {
             throw new EntityNotFoundException();
