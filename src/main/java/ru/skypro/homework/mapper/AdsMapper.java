@@ -15,18 +15,31 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface AdsMapper {
 
-    @Mapping(source = "userEntity.id", target = "author")
-    @Mapping(source = "imageEntity.filePath", target = "image")
-    Ad adEntityToAd(AdEntity adEntity);
+    default Ad adEntityToAd(AdEntity adEntity) {
+        Ad ad = new Ad();
+        ad.setAuthor(adEntity.getUserEntity().getId());
+        ad.setImage("/image/" + adEntity.getImageEntity().getId());
+        ad.setPk(adEntity.getPk());
+        ad.setPrice(adEntity.getPrice());
+        ad.setTitle(adEntity.getTitle());
+        return ad;
+    };
 
     List<Ad> adEntityListToAdList(List<AdEntity> adEntityList);
 
-    @Mapping(source = "userEntity.firstName", target = "authorFirstName")
-    @Mapping(source = "userEntity.lastName", target = "authorLastName")
-    @Mapping(source = "userEntity.username", target = "email")
-    @Mapping(source = "userEntity.phone", target = "phone")
-    @Mapping(source = "imageEntity.filePath", target = "image")
-    ExtendedAd adEntityToExtendedAd(AdEntity adEntity);
+    default ExtendedAd adEntityToExtendedAd(AdEntity adEntity) {
+        ExtendedAd extendedAd = new ExtendedAd();
+        extendedAd.setPk(adEntity.getPk());
+        extendedAd.setAuthorFirstName(adEntity.getUserEntity().getFirstName());
+        extendedAd.setAuthorLastName(adEntity.getUserEntity().getLastName());
+        extendedAd.setDescription(adEntity.getDescription());
+        extendedAd.setEmail(adEntity.getUserEntity().getUsername());
+        extendedAd.setImage("/image/" + adEntity.getImageEntity().getId());
+        extendedAd.setPhone(adEntity.getUserEntity().getPhone());
+        extendedAd.setPrice(adEntity.getPrice());
+        extendedAd.setTitle(adEntity.getTitle());
+        return extendedAd;
+    };
 
     AdEntity createOrUpdateAdToAdEntity(CreateOrUpdateAd createOrUpdateAd);
 

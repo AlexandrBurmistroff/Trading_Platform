@@ -36,8 +36,7 @@ CREATE TABLE image_entity (
     id                  serial PRIMARY KEY,
     file_path           text,
     file_size           bigint,
-    media_type          text,
-    data                oid
+    media_type          text
 );
 
 -- changeset KrozhDev: insert admin data
@@ -53,5 +52,5 @@ VALUES  ('some text', '2023-10-19 15:02:58.000000', '1', '1');
 INSERT  INTO  comment_entity  (text, created_at, user_entity_id, ad_entity_id)
 VALUES  ('some another text', '2023-10-19 15:02:58.000000', '1', '1');
 
-INSERT  INTO  image_entity  (file_path, file_size, media_type, data)
-VALUES  ('some/path', '10', '1', null);
+INSERT  INTO  image_entity  (file_path, file_size, media_type)
+VALUES  ('some/path', '10', '1');

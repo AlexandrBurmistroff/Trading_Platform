@@ -10,4 +10,6 @@ public interface ImageService {
 
     byte[] uploadAdImage(Integer adPk, MultipartFile file) throws IOException;
 
+    byte[] getImage(Integer id);
+
 }

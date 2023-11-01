@@ -21,8 +21,8 @@ public class ImageEntity {
     private String filePath;
     private long fileSize;
     private String mediaType;
-    @Lob
-    @Column(columnDefinition = "oid")
-    private byte[] data;
+//    @Lob
+//    @Column(columnDefinition = "oid")
+//    private byte[] data;
 
 }
