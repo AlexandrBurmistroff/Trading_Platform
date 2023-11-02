@@ -21,7 +21,7 @@ public interface UserMapper {
         user.setPhone(userEntity.getPhone());
         user.setRole(userEntity.getRole());
         if (userEntity.getImageEntity() != null) {
-            user.setImage("image/" + userEntity.getImageEntity().getId());
+            user.setImage("/image/" + userEntity.getImageEntity().getId());
         }
         return user;
     };
