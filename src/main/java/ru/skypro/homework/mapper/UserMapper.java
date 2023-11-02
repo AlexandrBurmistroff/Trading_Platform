@@ -12,8 +12,18 @@ import ru.skypro.homework.entity.UserEntity;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    @Mapping(source = "username", target = "email")
-    @Mapping(source = "imageEntity.filePath", target = "image")
-    User userEntityToUser(UserEntity userEntity);
+    default User userEntityToUser(UserEntity userEntity) {
+        User user = new User();
+        user.setId(userEntity.getId());
+        user.setEmail(userEntity.getUsername());
+        user.setFirstName(userEntity.getFirstName());
+        user.setLastName(userEntity.getLastName());
+        user.setPhone(userEntity.getPhone());
+        user.setRole(userEntity.getRole());
+        if (userEntity.getImageEntity() != null) {
+            user.setImage("/image/" + userEntity.getImageEntity().getId());
+        }
+        return user;
+    };
 
 }

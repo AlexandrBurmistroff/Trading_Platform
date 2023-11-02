@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.ImageEntity;
 import ru.skypro.homework.entity.UserEntity;
+import ru.skypro.homework.exception.EntityNotFoundException;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserRepository;
@@ -18,6 +19,7 @@ import javax.transaction.Transactional;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -50,11 +52,12 @@ public class ImageServiceImpl implements ImageService {
         Path filePath = Path.of(imageDir, user + "." + getExtensions(file.getOriginalFilename()));
         imageStream(filePath, file);
 
-        ImageEntity image = findUserImage(user.getId());
+        ImageEntity image = userRepository.findById(user.getId())
+                .map(UserEntity::getImageEntity)
+                .orElse(new ImageEntity());
         image.setFilePath(filePath.toString());
         image.setFileSize(file.getSize());
         image.setMediaType(file.getContentType());
-        image.setData(file.getBytes());
         imageRepository.save(image);
 
         if (user.getImageEntity() == null) {
@@ -70,30 +73,35 @@ public class ImageServiceImpl implements ImageService {
         Path filePath = Path.of(imageDir, ad + "." + getExtensions(file.getOriginalFilename()));
         imageStream(filePath, file);
 
-        ImageEntity image = findAdImage(adPk);
+        ImageEntity image = adRepository.findById(adPk)
+                .map(AdEntity::getImageEntity)
+                .orElse(new ImageEntity());
         image.setFilePath(filePath.toString());
         image.setFileSize(file.getSize());
         image.setMediaType(file.getContentType());
-        image.setData(file.getBytes());
         imageRepository.save(image);
 
         if (ad.getImageEntity() == null) {
             ad.setImageEntity(image);
             adRepository.save(ad);
         }
-        return image.getData();
+        return getImage(image.getId());
     }
 
-    private ImageEntity findAdImage(Integer adPk) {
-        return adRepository.findById(adPk)
-                .map(AdEntity::getImageEntity)
-                .orElse(new ImageEntity());
-    }
-
-    private ImageEntity findUserImage(Integer userId) {
-        return userRepository.findById(userId)
-                .map(UserEntity::getImageEntity)
-                .orElse(new ImageEntity());
+    @Override
+    public byte[] getImage(Integer id) {
+        Optional<ImageEntity> foundedImage = imageRepository.findById(id);
+        if (foundedImage.isEmpty()) {
+            throw new EntityNotFoundException("Image not found");
+        } else {
+            ImageEntity image = foundedImage.get();
+            Path imagePath = Path.of(image.getFilePath());
+            try {
+                return Files.readAllBytes(imagePath);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private void imageStream(Path filePath, MultipartFile file) throws IOException{
