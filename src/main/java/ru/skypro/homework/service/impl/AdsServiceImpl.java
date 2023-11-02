@@ -28,13 +28,9 @@ import java.util.Optional;
 public class AdsServiceImpl implements AdsService {
 
     private final AdRepository adRepository;
-
     private final UserRepository userRepository;
-
     private final ImageService imageService;
-
     private final AdsMapper adsMapper;
-
     private final UserAuthentication userAuthentication;
 
     /**
@@ -46,12 +42,11 @@ public class AdsServiceImpl implements AdsService {
     public Ads getAllAds() {
         List<AdEntity> adEntityList = adRepository.findAll();
         List<Ad> adList = adsMapper.adEntityListToAdList(adEntityList);
-        Integer sizeList = adList.size();
 
-        Ads ads = new Ads();
-        ads.setCount(sizeList);
-        ads.setResults(adList);
-        return ads;
+        return Ads.builder()
+                .count(adList.size())
+                .results(adList)
+                .build();
     }
 
     /**

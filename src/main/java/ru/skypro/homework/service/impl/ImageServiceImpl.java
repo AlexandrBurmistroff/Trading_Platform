@@ -33,11 +33,8 @@ public class ImageServiceImpl implements ImageService {
     private String imageDir;
 
     private final ImageRepository imageRepository;
-
     private final UserRepository userRepository;
-
     private final AdRepository adRepository;
-
     private final UserAuthentication userAuthentication;
 
     /**

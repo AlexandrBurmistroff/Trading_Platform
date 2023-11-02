@@ -32,11 +32,8 @@ import java.util.Optional;
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
-
     private final AdRepository adRepository;
-
     private final CommentMapper commentMapper;
-
     private final UserAuthentication userAuthentication;
 
     /**
@@ -55,10 +52,11 @@ public class CommentServiceImpl implements CommentService {
         } else {
             Collection<CommentEntity> commentEntities = adEntity.get().getCommentEntities();
             List<Comment> commentList = commentMapper.commentEntityListToCommentList(List.copyOf(commentEntities));
-            Comments comments = new Comments();
-            comments.setCount(commentList.size());
-            comments.setResults(commentList);
-            return comments;
+
+            return Comments.builder()
+                    .count(commentList.size())
+                    .results(commentList)
+                    .build();
         }
     }
 

@@ -2,11 +2,9 @@ package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.config.CustomUserDetailsServiceImpl;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.User;
@@ -31,15 +29,9 @@ import java.io.IOException;
 public class UsersServiceImpl implements UsersService {
 
     private final UserRepository userRepository;
-
     private final ImageService imageService;
-
     private final UserMapper userMapper;
-
     private final UserAuthentication userAuthentication;
-
-    private final CustomUserDetailsServiceImpl userDetailsService;
-
     private final PasswordEncoder encoder;
 
     /**
