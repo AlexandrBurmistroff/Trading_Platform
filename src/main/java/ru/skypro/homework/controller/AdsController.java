@@ -24,7 +24,6 @@ public class AdsController {
 
     /**
      * Метод получает все объявления.
-     *
      * @return возвращает ResponsEntity.
      */
     @GetMapping

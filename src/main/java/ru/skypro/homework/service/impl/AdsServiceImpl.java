@@ -16,6 +16,7 @@ import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.util.UserAuthentication;
 
+
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.Collection;
@@ -61,7 +62,7 @@ public class AdsServiceImpl implements AdsService {
         AdEntity newAdEntity = adsMapper.createOrUpdateAdToAdEntity(properties);
         UserEntity currentUserEntity = userAuthentication.getCurrentUser();
 
-        if (currentUserEntity.getId() == null) {
+        if (currentUserEntity == null) {
             throw new EntityNotFoundException();
         } else {
             newAdEntity.setUserEntity(currentUserEntity);
