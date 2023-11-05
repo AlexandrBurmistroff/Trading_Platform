@@ -9,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.ResultActions;
 import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.service.*;
 
@@ -41,12 +42,13 @@ class ImageControllerTest {
     void getImage() throws Exception {
         byte[] imageBytes = new byte[] {(byte) 129, (byte) 130, (byte) 131};
 
-        when(imageService.getImage(any(Integer.class))).thenReturn(imageBytes);
+        when(imageService.getImage(2)).thenReturn(imageBytes);
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/image/2")
-                        .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(content().bytes(imageBytes));
-        verify(imageService).getImage(3);
+                .get("/image/2")
+                .contentType(MediaType.IMAGE_PNG_VALUE)
+                .accept(MediaType.IMAGE_PNG_VALUE))
+                .andExpect(content().bytes(imageBytes));
+        verify(imageService).getImage(2);
     }
 
 }
