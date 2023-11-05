@@ -66,12 +66,7 @@ public class AdsServiceImpl implements AdsService {
         } else {
             newAdEntity.setUserEntity(currentUserEntity);
             AdEntity savedAdEntity = adRepository.save(newAdEntity);
-
-            try {
-                imageService.uploadAdImage(savedAdEntity.getPk(), image);
-            } catch (IOException e) {
-                log.error("Image not uploaded");
-            }
+            imageService.uploadAdImage(savedAdEntity.getPk(), image);
             return adsMapper.adEntityToAd(savedAdEntity);
         }
     }
@@ -189,13 +184,7 @@ public class AdsServiceImpl implements AdsService {
         } else {
             if (currentUserEntity.getId().equals(checkForExistAd.get().getUserEntity().getId()) ||
                     currentUserEntity.getRole().equals(Role.ADMIN)) {
-                byte[] image = new byte[0];
-                try {
-                    image = imageService.uploadAdImage(adPk, file);
-                } catch (IOException e) {
-                    log.error("Image not uploaded");
-                }
-                return image;
+                return imageService.uploadAdImage(adPk, file);
             } else {
                 throw new EntityForbiddenException();
             }

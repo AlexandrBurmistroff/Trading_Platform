@@ -43,11 +43,15 @@ public class ImageServiceImpl implements ImageService {
      * @throws IOException
      */
     @Override
-    public void uploadUserImage(MultipartFile file) throws IOException {
+    public void uploadUserImage(MultipartFile file) {
         UserEntity user = userAuthentication.getCurrentUser();
 
         Path filePath = Path.of(imageDir, user + "." + getExtensions(file.getOriginalFilename()));
-        imageStream(filePath, file);
+        try {
+            imageStream(filePath, file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         ImageEntity image = userRepository.findById(user.getId())
                 .map(UserEntity::getImageEntity)
@@ -64,11 +68,15 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public byte[] uploadAdImage(Integer adPk, MultipartFile file) throws IOException {
+    public byte[] uploadAdImage(Integer adPk, MultipartFile file) {
         AdEntity ad = adRepository.getReferenceById(adPk);
 
         Path filePath = Path.of(imageDir, ad + "." + getExtensions(file.getOriginalFilename()));
-        imageStream(filePath, file);
+        try {
+            imageStream(filePath, file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         ImageEntity image = adRepository.findById(adPk)
                 .map(AdEntity::getImageEntity)
