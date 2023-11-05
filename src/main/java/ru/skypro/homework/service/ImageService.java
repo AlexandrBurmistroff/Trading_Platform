@@ -6,9 +6,9 @@ import java.io.IOException;
 
 public interface ImageService {
 
-    void uploadUserImage(MultipartFile file) throws IOException;
+    void uploadUserImage(MultipartFile file);
 
-    byte[] uploadAdImage(Integer adPk, MultipartFile file) throws IOException;
+    byte[] uploadAdImage(Integer adPk, MultipartFile file);
 
     byte[] getImage(Integer id);
 

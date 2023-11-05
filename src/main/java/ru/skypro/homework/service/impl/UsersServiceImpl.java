@@ -91,10 +91,6 @@ public class UsersServiceImpl implements UsersService {
      */
     @Override
     public void updateUserImage(MultipartFile file) {
-        try {
-            imageService.uploadUserImage(file);
-        } catch (IOException e) {
-            log.error("Image nou uploaded");
-        }
+        imageService.uploadUserImage(file);
     }
 }
