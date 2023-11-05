@@ -63,7 +63,6 @@ class UsersServiceImplTest {
                 .filePath("/image")
                 .fileSize(1L)
                 .mediaType("123")
-                .data("image".getBytes())
                 .build());
         userRepository.save(userEntity);
     }

@@ -16,10 +16,8 @@ import ru.skypro.homework.dto.Comment;
 import ru.skypro.homework.dto.Comments;
 import ru.skypro.homework.dto.CreateOrUpdateComment;
 import ru.skypro.homework.exception.EntityNotFoundException;
-import ru.skypro.homework.service.AdsService;
-import ru.skypro.homework.service.AuthService;
-import ru.skypro.homework.service.CommentService;
-import ru.skypro.homework.service.UsersService;
+import ru.skypro.homework.service.*;
+
 import java.util.List;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -36,6 +34,9 @@ class CommentsControllerTest {
 
     @MockBean
     private AdsService adsService;
+
+    @MockBean
+    ImageService imageService;
 
     @MockBean
     private AuthService authService;
@@ -132,20 +133,12 @@ class CommentsControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-//    @Test
-//    void deleteComment() throws Exception {
-//        when(commentsService.deleteComment(1, 1)).thenReturn(true);
-//        mockMvc.perform(MockMvcRequestBuilders
-//                        .delete("/ads/1/comments/1")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk());
-//
-//        when(commentsService.deleteComment(1, 2)).thenThrow(new EntityNotFoundException("Комментарий не найден"));
-//        mockMvc.perform(MockMvcRequestBuilders
-//                        .delete("/ads/1/comments/2")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isNotFound());
-//    }
+    @Test
+    void deleteComment() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/ads/1/comments/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 }
