@@ -89,9 +89,6 @@ class UsersServiceImplTest {
 
         assertNotNull(usersService.getUser());
         assertEquals(usersService.getUser(), user);
-        //assertThrows(EntityNotFoundException.class);
-
-//        verify(userMapper.userEntityToUser((any(UserEntity.class))), timeout(1));
     }
 
     @Test

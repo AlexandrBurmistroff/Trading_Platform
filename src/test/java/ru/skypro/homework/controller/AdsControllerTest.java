@@ -1,21 +1,17 @@
 package ru.skypro.homework.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.CommentEntity;
@@ -23,14 +19,11 @@ import ru.skypro.homework.entity.ImageEntity;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.service.*;
 
-import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -123,36 +116,6 @@ class AdsControllerTest {
                 .andExpect(status().isOk());
     }
 
-//    @Test
-//    void addAd() throws Exception {
-//
-//        CreateOrUpdateAd createOrUpdateAd = new CreateOrUpdateAd();
-//        createOrUpdateAd.setTitle("Test Ad");
-//        createOrUpdateAd.setPrice(100);
-//        createOrUpdateAd.setDescription("Test description");
-//
-//        ObjectMapper jsonMapper = new ObjectMapper();
-//
-//        byte[] bytes = new byte[] {1,2,3,4,5,6};
-//
-//        MultipartFile image = new MockMultipartFile("test.jpg", bytes);
-//
-//        MockMultipartFile file = new MockMultipartFile(
-//                "attachments", "test.jpg",
-//                MediaType.MULTIPART_FORM_DATA_VALUE,
-//                bytes);
-//
-//        Ad ad = new Ad(1,"/image/1",1,100, "Test Ad");
-//
-//        // Задаем поведение заглушек
-//        when(adsService.addAd(createOrUpdateAd, image)).thenReturn(ad);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.multipart("/ads")
-//                        .file(file)
-//                        .param(jsonMapper.writeValueAsString(createOrUpdateAd)))
-//                        .andExpect(status().isCreated());
-//    }
-
     @Test
     void getAds() throws Exception {
 
@@ -231,28 +194,4 @@ class AdsControllerTest {
                 .andExpect(jsonPath("$.count").value("2"));
     }
 
-//    @Test
-//    void updateImage() throws Exception {
-//        ObjectMapper jsonMapper = new ObjectMapper();
-//
-//        byte[] bytes = new byte[] {1,2,3,4,5,6};
-//
-//        MultipartFile image = new MockMultipartFile("test.jpg", bytes);
-//
-//        MockMultipartFile file = new MockMultipartFile(
-//                "attachments", "test.jpg",
-//                MediaType.MULTIPART_FORM_DATA_VALUE,
-//                bytes);
-//
-//        Ad ad = new Ad(1,"/image/1",1,100, "Test Ad");
-//
-//        // Задаем поведение заглушек
-//        when(adsService.updateImage(1, image)).thenReturn(bytes);
-//
-//        mockMvc.perform(MockMvcRequestBuilders
-//                        .patch("/ads/1/image")
-//                        .content(file.getBytes())
-//                        .contentType(MediaType.MULTIPART_FORM_DATA))
-//                        .andExpect(status().isOk());
-//    }
 }

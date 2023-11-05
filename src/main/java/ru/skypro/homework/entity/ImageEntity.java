@@ -3,7 +3,6 @@ package ru.skypro.homework.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 
 @Getter
 @Setter
@@ -21,8 +20,5 @@ public class ImageEntity {
     private String filePath;
     private long fileSize;
     private String mediaType;
-//    @Lob
-//    @Column(columnDefinition = "oid")
-//    private byte[] data;
 
 }

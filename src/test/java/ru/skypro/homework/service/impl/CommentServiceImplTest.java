@@ -100,20 +100,6 @@ class CommentServiceImplTest {
                 "someDescriptionToAdd", userEntity, imageEntity, commentEntityList);
     }
 
-//    @Test
-//    void getComments() {
-//        List<Comment> commentList = new ArrayList<>();
-//        commentList.add(comment1);
-//        commentList.add(comment2);
-//
-//        when(adRepository.findById(anyInt())).thenReturn(Optional.of(adEntity));
-//        when(commentMapper.commentEntityListToCommentList(List.copyOf(commentEntityList))).thenReturn(commentList);
-//        assertThat(commentService.getComments(1).getCount()).isEqualTo(2);
-//
-//        when(adRepository.findById(anyInt())).thenReturn(Optional.empty());
-//        assertThrows(EntityNotFoundException.class, () -> commentService.getComments(1));
-//    }
-
     @Test
     void addUpdateComment() {
         CreateOrUpdateComment createOrUpdateComment = new CreateOrUpdateComment();

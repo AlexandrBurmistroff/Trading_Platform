@@ -1,7 +1,6 @@
 package ru.skypro.homework.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,11 +54,6 @@ class UsersControllerTest {
                 .build());
         userRepository.save(userEntity);
     }
-
-//    @AfterEach
-//    void tearDown() {
-//        userRepository.delete(userEntity);
-//    }
 
     @Test
     void setPassword() {
