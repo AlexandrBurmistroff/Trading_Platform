@@ -11,15 +11,17 @@ import java.util.List;
 public interface CommentMapper {
 
     default Comment commentEntityToComment(CommentEntity commentEntity) {
-        return Comment.builder()
-                .author(commentEntity.getUserEntity().getId())
-                .authorImage("/image/" + commentEntity.getUserEntity().getId())
-                .authorFirstName(commentEntity.getUserEntity().getFirstName())
-                .createdAt(String.valueOf(commentEntity.getCreatedAt()))
-                .pk(commentEntity.getPk())
-                .text(commentEntity.getText())
-                .adId(commentEntity.getAdEntity().getPk())
-                .build();
+        Comment comment = new Comment();
+        comment.setAuthor(commentEntity.getUserEntity().getId());
+        if (commentEntity.getUserEntity().getImageEntity() != null) {
+            comment.setAuthorImage("/image/" + commentEntity.getUserEntity().getImageEntity().getId());
+        }
+        comment.setAuthorFirstName(commentEntity.getUserEntity().getFirstName());
+        comment.setCreatedAt(String.valueOf(commentEntity.getCreatedAt()));
+        comment.setPk(commentEntity.getPk());
+        comment.setText(commentEntity.getText());
+        comment.setAdId(commentEntity.getAdEntity().getPk());
+        return comment;
     };
 
     List<Comment> commentEntityListToCommentList(List<CommentEntity> commentEntityList);

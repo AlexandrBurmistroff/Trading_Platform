@@ -15,13 +15,15 @@ import java.util.List;
 public interface AdsMapper {
 
     default Ad adEntityToAd(AdEntity adEntity) {
-        return Ad.builder()
-                .author(adEntity.getUserEntity().getId())
-                .image("/image/" + adEntity.getImageEntity().getId())
-                .pk(adEntity.getPk())
-                .price(adEntity.getPrice())
-                .title(adEntity.getTitle())
-                .build();
+        Ad ad = new Ad();
+        ad.setAuthor(adEntity.getUserEntity().getId());
+        if (adEntity.getImageEntity() != null) {
+            ad.setImage("/image/" + adEntity.getImageEntity().getId());
+        }
+        ad.setPk(adEntity.getPk());
+        ad.setPrice(adEntity.getPrice());
+        ad.setTitle(adEntity.getTitle());
+        return ad;
     };
 
     List<Ad> adEntityListToAdList(List<AdEntity> adEntityList);

@@ -50,6 +50,7 @@ public class ImageServiceImpl implements ImageService {
         try {
             imageStream(filePath, file);
         } catch (IOException e) {
+            log.error("User's image don't uploaded");
             throw new RuntimeException(e);
         }
 
@@ -75,6 +76,7 @@ public class ImageServiceImpl implements ImageService {
         try {
             imageStream(filePath, file);
         } catch (IOException e) {
+            log.error("Ad's image don't uploaded");
             throw new RuntimeException(e);
         }
 
