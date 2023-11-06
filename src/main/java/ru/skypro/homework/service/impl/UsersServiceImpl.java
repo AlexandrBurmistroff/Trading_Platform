@@ -17,7 +17,6 @@ import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.service.UsersService;
 import ru.skypro.homework.util.UserAuthentication;
 
-import java.io.IOException;
 
 /**
  * Сервис для обработки запроса от UsersController, обращений в БД
@@ -37,7 +36,6 @@ public class UsersServiceImpl implements UsersService {
     /**
      * Метод, который сравнивает значения текущего пароля с новым
      * @param newPassword - новый пароль
-     * @return true, если текущий пароль не совпадает с новым паролем; false, если пароли одинаковые
      */
     @Override
     public void setPassword(NewPassword newPassword) {
@@ -46,7 +44,6 @@ public class UsersServiceImpl implements UsersService {
         if (!encoder.matches(newPassword.getCurrentPassword(), user.getPassword())) {
             throw new PasswordValidationException("Password validation failed");
         }
-
         String encodedNewPassword = encoder.encode(newPassword.getNewPassword());
         user.setPassword(encodedNewPassword);
         userRepository.save(user);
