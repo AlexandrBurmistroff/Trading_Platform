@@ -25,13 +25,14 @@ public class UserEntity {
     private String phone;
     private Role role;
 
-    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
+//    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private Collection<AdEntity> adEntities;
 
-    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private Collection<CommentEntity> commentEntities;
 
-    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL)
     private ImageEntity imageEntity;
 
 }
