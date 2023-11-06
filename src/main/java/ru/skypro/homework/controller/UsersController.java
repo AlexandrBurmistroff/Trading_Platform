@@ -28,7 +28,7 @@ public class UsersController {
      * @return статус 200, если новый пароль не совпадает с текущим паролем и сохранился в БД.
      */
     @PostMapping("/set_password")
-    public ResponseEntity<Void> setPassword(@RequestBody NewPassword newPassword) { // TODO: 14.10.2023 требуется дороботка
+    public ResponseEntity<Void> setPassword(@RequestBody NewPassword newPassword) {
         usersService.setPassword(newPassword);
         return new ResponseEntity<>(HttpStatus.OK);
     }
