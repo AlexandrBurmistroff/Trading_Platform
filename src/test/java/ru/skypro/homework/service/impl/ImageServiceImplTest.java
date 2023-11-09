@@ -81,13 +81,19 @@ class ImageServiceImplTest {
         byte[] imageBytes = {1,0,1};
         MultipartFile multipartFile = mock(MockMultipartFile.class);
         multipartFile = new MockMultipartFile("file", imageBytes);
+        Optional<ImageEntity> optionalImage = Optional.of(image);
 
         when(userAuthentication.getCurrentUser()).thenReturn(userEntity);
+        when(imageRepository.findById(any())).thenReturn(optionalImage);
         when(imageRepository.save(any(ImageEntity.class))).thenReturn(image);
+
+        Optional<ImageEntity> optionalImage1 = imageRepository.findById(anyInt());
+        assertEquals(optionalImage, optionalImage1);
 
         imageService.uploadUserImage(multipartFile);
 
         verify(userAuthentication).getCurrentUser();
+        verify(imageRepository).findById(anyInt());
         verify(imageRepository).save(any(ImageEntity.class));
     }
 
@@ -116,7 +122,7 @@ class ImageServiceImplTest {
         multipartFile = new MockMultipartFile("file", imageBytes);
 
         when(adRepository.getReferenceById(anyInt())).thenReturn(ad);
-        when(imageRepository.findById(anyInt())).thenReturn(optionalImage);
+        when(imageRepository.findById(any())).thenReturn(optionalImage);
         when(imageRepository.save(any(ImageEntity.class))).thenReturn(image);
 
         Optional<ImageEntity> optionalImage1 = imageRepository.findById(anyInt());
@@ -138,7 +144,7 @@ class ImageServiceImplTest {
     }
 
     @Test
-    void getImage() throws IOException {
+    void correctGetImage() throws IOException {
         ImageEntity image = ImageEntity.builder()
                 .filePath("./data/image_test.webp")
                 .fileSize(42698)
@@ -148,11 +154,18 @@ class ImageServiceImplTest {
         byte[] imageBytes = Files.readAllBytes(imagePath);
         Optional<ImageEntity> optionalImage = Optional.of(image);
 
-        when(imageRepository.findById(anyInt())).thenReturn(optionalImage);
+        when(imageRepository.findById(any())).thenReturn(optionalImage);
 
         byte[] foundedImageBytes = imageService.getImage(1);
 
-        verify(imageRepository).findById(anyInt());
+        verify(imageRepository).findById(any());
         assertArrayEquals(imageBytes, foundedImageBytes);
+    }
+
+    @Test
+    void incorrectGetImage() {
+        assertThrows(RuntimeException.class, () -> {
+            doThrow().when(imageService).getImage(null);
+        });
     }
 }
