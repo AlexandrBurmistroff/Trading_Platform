@@ -71,6 +71,21 @@ class AuthControllerTest {
     }
 
     @Test
+    void loginIsUnauthorized() throws Exception {
+        jsonObject = new JSONObject();
+        jsonObject.put("username", "user@gmail.com");
+        jsonObject.put("password", "password1");
+
+        when(authService.login("user1@gmail.com", "password")).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonObject.toString())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void register() throws Exception {
         Register register = new Register("user1@gmail.com", "password",
                 "Alex", "B", "+79999999999", Role.ADMIN);
@@ -90,5 +105,23 @@ class AuthControllerTest {
                         .content(jsonObject.toString())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void registerIsBadRequest() throws Exception {
+        Register register = new Register("user1@gmail.com", "password",
+                "Alex", "B", "+79999999999", Role.ADMIN);
+
+        jsonObject = new JSONObject();
+        jsonObject.put("username", "user");
+        jsonObject.put("password", "pas");
+
+        when(authService.register(register)).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonObject.toString())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }
