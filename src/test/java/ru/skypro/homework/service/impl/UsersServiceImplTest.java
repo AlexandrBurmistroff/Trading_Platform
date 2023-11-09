@@ -1,21 +1,15 @@
 package ru.skypro.homework.service.impl;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.User;
 import ru.skypro.homework.entity.ImageEntity;
 import ru.skypro.homework.entity.UserEntity;
@@ -29,37 +23,37 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 class UsersServiceImplTest {
 
-    @Mock
+    @MockBean
     private UserRepository userRepository;
 
-    @Mock
+    @MockBean
     private UserMapper userMapper;
 
-    @Mock
+    @MockBean
     private PasswordEncoder passwordEncoder;
 
-    @Mock
+    @MockBean
     private UserAuthentication userAuthentication;
 
-    @Mock
+    @MockBean
     private ImageRepository imageRepository;
 
-    @InjectMocks
-    private UsersServiceImpl usersService;
+    @MockBean
+    private ImageServiceImpl imageService;
 
-    private final UserEntity userEntity = new UserEntity();
-    @Mock
+    @MockBean
     private NewPassword newPassword;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-//        Authentication authentication = Mockito.mock(Authentication.class);
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//        when(authentication.getName()).thenReturn("user1@gmail.com");
+    @Autowired
+    private UsersServiceImpl usersService;
 
+
+    @Test
+    void setPassword() {
+        UserEntity userEntity = new UserEntity();
         userEntity.setId(1);
         userEntity.setUsername("user1@gmail.com");
         userEntity.setPassword("password");
@@ -74,11 +68,6 @@ class UsersServiceImplTest {
                 .mediaType("123")
                 .build());
 
-        userMapper.userEntityToUser(userEntity);
-    }
-
-    @Test
-    void setPassword() {
         NewPassword newPassword = new NewPassword("password2", "password2");
 
         when(userAuthentication.getCurrentUser()).thenReturn(userEntity);
@@ -99,20 +88,61 @@ class UsersServiceImplTest {
         user.setRole(Role.ADMIN);
         user.setImage("image");
 
-        User serviceUser = userMapper.userEntityToUser(userEntity);
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1);
+        userEntity.setUsername("user1@gmail.com");
+        userEntity.setPassword("password");
+        userEntity.setFirstName("Alex");
+        userEntity.setLastName("B");
+        userEntity.setPhone("+79999999999");
+        userEntity.setRole(Role.ADMIN);
+        userEntity.setImageEntity(ImageEntity.builder()
+                .id(1)
+                .filePath("/image")
+                .fileSize(1L)
+                .mediaType("123")
+                .build());
 
         when(userRepository.findByUsername("user1@gmail.com")).thenReturn(userEntity);
         when(userMapper.userEntityToUser(userEntity)).thenReturn(user);
+        when(userAuthentication.getCurrentUser()).thenReturn(userEntity);
 
         assertNotNull(userEntity);
-        //assertEquals(serviceUser, user);
+        assertNotNull(user);
     }
 
     @Test
     void updateUser() {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(1);
+        userEntity.setUsername("user@gmail.com");
+        userEntity.setPassword("password");
+        userEntity.setFirstName("Alex1");
+        userEntity.setLastName("B");
+        userEntity.setPhone("+79999999999");
+        userEntity.setRole(Role.ADMIN);
+        userEntity.setImageEntity(ImageEntity.builder()
+                .id(1)
+                .filePath("/image")
+                .fileSize(1L)
+                .mediaType("123")
+                .build());
+
+        UpdateUser updateUser = new UpdateUser("Alex", "B", "+79999999999");
+        when(userAuthentication.getCurrentUser()).thenReturn(userEntity);
+
+        userEntity.setFirstName(updateUser.getFirstName());
+        userEntity.setLastName(updateUser.getLastName());
+        userEntity.setPhone(updateUser.getPhone());
+        when(userRepository.save(any(UserEntity.class))).thenReturn(userEntity);
     }
 
     @Test
     void updateUserImage() {
+        MultipartFile file = Mockito.mock(MultipartFile.class);
+
+        usersService.updateUserImage(file);
+
+        verify(imageService).uploadUserImage(file);
     }
 }
