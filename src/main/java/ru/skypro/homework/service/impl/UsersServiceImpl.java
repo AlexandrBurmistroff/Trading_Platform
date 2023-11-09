@@ -71,10 +71,6 @@ public class UsersServiceImpl implements UsersService {
     public UpdateUser updateUser(UpdateUser updateUser) {
         UserEntity currentUserEntity = userAuthentication.getCurrentUser();
 
-        if (currentUserEntity.getUsername().isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-
         currentUserEntity.setFirstName(updateUser.getFirstName());
         currentUserEntity.setLastName(updateUser.getLastName());
         currentUserEntity.setPhone(updateUser.getPhone());
