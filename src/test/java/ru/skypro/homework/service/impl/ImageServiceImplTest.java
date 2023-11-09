@@ -2,50 +2,93 @@ package ru.skypro.homework.service.impl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.entity.AdEntity;
+import ru.skypro.homework.entity.CommentEntity;
+import ru.skypro.homework.entity.ImageEntity;
+import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserRepository;
-import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.util.UserAuthentication;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class ImageServiceImplTest {
 
-    @Mock
+    @MockBean
     private ImageRepository imageRepository;
-    @Mock
+    @MockBean
     private UserRepository userRepository;
-    @Mock
+    @MockBean
     private AdRepository adRepository;
-    @Mock
+    @MockBean
     private UserAuthentication userAuthentication;
 
-    @InjectMocks
+    @Autowired
     ImageServiceImpl imageService;
+
+    private CommentEntity commentEntity1;
+    private CommentEntity commentEntity2;
+    private LocalDateTime time;
+    private List<CommentEntity> commentEntityList;
+    private UserEntity userEntity;
+    private AdEntity adEntity;
+    private List<AdEntity> adEntityList;
 
     @BeforeEach
     void init() {
-        MockitoAnnotations.initMocks(this);
+
+        ImageEntity image = mock(ImageEntity.class);
+
+        time = LocalDateTime.now();
+
+        userEntity = new UserEntity(1, "testUser", "password", "firstName",
+                "lastName", "999", Role.USER, adEntityList, commentEntityList, image);
+
+        commentEntity1 = new CommentEntity(1, "comment1", time, userEntity, adEntity);
+        commentEntity2 = new CommentEntity(2, "comment2", time, userEntity, adEntity);
+
+        commentEntityList = new ArrayList<>();
+        commentEntityList.add(commentEntity1);
+        commentEntityList.add(commentEntity2);
+
+        adEntity = new AdEntity(1, 100, "someAd",
+                "someDescriptionToAdd", userEntity, image, commentEntityList);
+
+        adEntityList = new ArrayList<>();
+        adEntityList.add(adEntity);
     }
 
     @Test
     void correctUploadUserImage() {
-        ImageService imageService = mock(ImageService.class);
-        byte[] image = {1, 0, 1};
-        MultipartFile multipartFile = new MockMultipartFile("file", image);
+        ImageEntity image = mock(ImageEntity.class);
+        byte[] imageBytes = {1,0,1};
+        MultipartFile multipartFile = mock(MockMultipartFile.class);
+        multipartFile = new MockMultipartFile("file", imageBytes);
 
-        ArgumentCaptor<MultipartFile> captor = ArgumentCaptor.forClass(MultipartFile.class);
-        doNothing().when(imageService).uploadUserImage(captor.capture());
+        when(userAuthentication.getCurrentUser()).thenReturn(userEntity);
+        when(imageRepository.save(any(ImageEntity.class))).thenReturn(image);
+
         imageService.uploadUserImage(multipartFile);
-        assertEquals(multipartFile, captor.getValue());
+
+        verify(userAuthentication).getCurrentUser();
+        verify(imageRepository).save(any(ImageEntity.class));
     }
 
     @Test
@@ -56,9 +99,60 @@ class ImageServiceImplTest {
     }
 
     @Test
+    void uploadAdImage() throws IOException {
+        ImageEntity image = ImageEntity.builder()
+                .filePath("./data/image_test.webp")
+                .fileSize(42698)
+                .mediaType("image/webp")
+                .build();
+        AdEntity ad = new AdEntity(1, 100, "someAd",
+                "someDescriptionToAdd", userEntity, image, commentEntityList);
+
+        Path imagePath = Path.of(image.getFilePath());
+        byte[] imageBytes = Files.readAllBytes(imagePath);
+        Optional<ImageEntity> optionalImage = Optional.of(image);
+
+        MultipartFile multipartFile = mock(MockMultipartFile.class);
+        multipartFile = new MockMultipartFile("file", imageBytes);
+
+        when(adRepository.getReferenceById(anyInt())).thenReturn(ad);
+        when(imageRepository.findById(anyInt())).thenReturn(optionalImage);
+        when(imageRepository.save(any(ImageEntity.class))).thenReturn(image);
+
+        Optional<ImageEntity> optionalImage1 = imageRepository.findById(anyInt());
+        assertEquals(optionalImage, optionalImage1);
+
+        byte[] foundedImageBytes = imageService.uploadAdImage(ad.getPk(), multipartFile);
+
+        verify(adRepository).getReferenceById(anyInt());
+        verify(imageRepository).findById(anyInt());
+        verify(imageRepository).save(any(ImageEntity.class));
+        assertArrayEquals(imageBytes, foundedImageBytes);
+    }
+
+    @Test
     void incorrectUploadAdImage() {
         assertThrows(RuntimeException.class, () -> {
             doThrow().when(imageService).uploadAdImage(anyInt(), null);
         });
+    }
+
+    @Test
+    void getImage() throws IOException {
+        ImageEntity image = ImageEntity.builder()
+                .filePath("./data/image_test.webp")
+                .fileSize(42698)
+                .mediaType("image/webp")
+                .build();
+        Path imagePath = Path.of(image.getFilePath());
+        byte[] imageBytes = Files.readAllBytes(imagePath);
+        Optional<ImageEntity> optionalImage = Optional.of(image);
+
+        when(imageRepository.findById(anyInt())).thenReturn(optionalImage);
+
+        byte[] foundedImageBytes = imageService.getImage(1);
+
+        verify(imageRepository).findById(anyInt());
+        assertArrayEquals(imageBytes, foundedImageBytes);
     }
 }
