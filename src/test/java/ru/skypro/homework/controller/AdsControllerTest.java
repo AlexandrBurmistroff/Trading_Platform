@@ -42,7 +42,7 @@ class AdsControllerTest {
     private AdsService adsService;
 
     @MockBean
-    ImageService imageService;
+    private ImageService imageService;
 
     @MockBean
     private AuthService authService;
@@ -54,7 +54,7 @@ class AdsControllerTest {
     private AdsController adsController;
 
     @Mock
-    ImageEntity imageEntity;
+    private ImageEntity imageEntity;
 
 
     private AdEntity adEntity;

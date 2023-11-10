@@ -32,5 +32,5 @@
 --Клонировать проект в среду разработки.<br>
 --Настроить БД и прописать значения в файле application.properties.<br>
 --Настроить путь к файлу с картинками. Пример: `path.to.image.folder=/Users/grigoriirarog/Pictures/image<br>
---скайте и установите Docker. Запустите проект с помощью Docker.<br>
+--Скачайте и установите Docker. Запустите проект с помощью Docker.<br>
 --[Ссылка на фронтенд](https://drive.google.com/uc?id=1UZTpeTAQpC4ANkHEFAGK2yjTFzZhXLPz&export=download)

@@ -13,6 +13,9 @@ import ru.skypro.homework.dto.CreateOrUpdateAd;
 import ru.skypro.homework.dto.ExtendedAd;
 import ru.skypro.homework.service.AdsService;
 
+/**
+ * Контроллер для обработки запросов об объявлениях
+ */
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
@@ -24,7 +27,7 @@ public class AdsController {
 
     /**
      * Метод получает все объявления.
-     * @return возвращает ResponsEntity.
+     * @return возвращает ResponseEntity.
      */
     @GetMapping
     public ResponseEntity<Ads> getAllAds() {
@@ -36,7 +39,7 @@ public class AdsController {
      *
      * @param properties DTO. Включает title, price и description объявления.
      * @param image      принимает изображение.
-     * @return возвращает ResponsEntity.
+     * @return возвращает ResponseEntity.
      */
     @PostMapping
     public ResponseEntity<Ad> addAd(@RequestPart("properties") CreateOrUpdateAd properties,
@@ -48,7 +51,7 @@ public class AdsController {
      * Метод получает информацию об объявлении по id.
      *
      * @param id идентификатор объявления в БД.
-     * @return возвращает ResponsEntity.
+     * @return возвращает ResponseEntity.
      */
     @GetMapping(value = "/{id}")
     public ResponseEntity<ExtendedAd> getAds(@PathVariable Integer id) {
@@ -59,7 +62,7 @@ public class AdsController {
      * Метод удаляет объявление по id.
      *
      * @param id идентификатор объявления в БД.
-     * @return возвращает ResponsEntity.
+     * @return возвращает ResponseEntity.
      */
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> removeAd(@PathVariable Integer id) {
@@ -81,6 +84,7 @@ public class AdsController {
     }
 
     /**
+     * Метод для получения объявлений пользователя
      * @return возвращает объявления авторизованного пользователя.
      */
     @GetMapping(value = "/me")

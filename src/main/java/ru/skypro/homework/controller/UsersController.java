@@ -12,6 +12,9 @@ import ru.skypro.homework.dto.UpdateUser;
 import ru.skypro.homework.dto.User;
 import ru.skypro.homework.service.UsersService;
 
+/**
+ * Контроллер для обработки запросов о пользователе
+ */
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
@@ -25,7 +28,7 @@ public class UsersController {
      * Метод для обновления пароля.
      *
      * @param newPassword принимает новый пароль от пользователя.
-     * @return статус 200, если новый пароль не совпадает с текущим паролем и сохранился в БД.
+     * @return статус 200 об успешном сохранении нового пароля в БД.
      */
     @PostMapping("/set_password")
     public ResponseEntity<Void> setPassword(@RequestBody NewPassword newPassword) {

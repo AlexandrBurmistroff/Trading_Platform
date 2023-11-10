@@ -16,13 +16,14 @@ import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.util.UserAuthentication;
 
-
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Сервис для поиска, получения, обновления, удаления объявления
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -37,7 +38,7 @@ public class AdsServiceImpl implements AdsService {
     /**
      * Метод получает все объявления из БД и конвертирует их в Ads Dto.
      *
-     * @return возвращает ResponsEntity status с Ads Dto.
+     * @return возвращает Ads Dto.
      */
     @Override
     public Ads getAllAds() {
@@ -55,7 +56,7 @@ public class AdsServiceImpl implements AdsService {
      *
      * @param properties CreateOrUpdateAd DTO. Включает title, price и description объявления.
      * @param image      принимает изображение объявления.
-     * @return возвращает ResponsEntity status с Ad Dto.
+     * @return возвращает Ad Dto.
      */
     @Override
     public Ad addAd(CreateOrUpdateAd properties, MultipartFile image) {
@@ -76,7 +77,7 @@ public class AdsServiceImpl implements AdsService {
      * Метод получает из БД информацию об объявлении по id объявления.
      *
      * @param adPk идентификатор объявления в БД.
-     * @return возвращает ResponsEntity status с ExtendedAd Dto.
+     * @return возвращает ExtendedAd Dto.
      */
     @Override
     public ExtendedAd getAds(Integer adPk) {
@@ -96,7 +97,6 @@ public class AdsServiceImpl implements AdsService {
      * Метод удаляет объявление из БД по id объявления.
      *
      * @param adPk идентификатор объявления в БД.
-     * @return возвращает ResponsEntity status.
      */
     @Override
     public void removeAd(Integer adPk) {
@@ -120,7 +120,7 @@ public class AdsServiceImpl implements AdsService {
      *
      * @param adPk             идентификатор объявления в БД.
      * @param createOrUpdateAd DTO. Включает title, price и description объявления.
-     * @return возвращает ResponsEntity status с Ad Dto.
+     * @return возвращает Ad Dto.
      */
     @Override
     public Ad updateAds(Integer adPk, CreateOrUpdateAd createOrUpdateAd) {
@@ -149,7 +149,7 @@ public class AdsServiceImpl implements AdsService {
     /**
      * Метод возвращает все объявления авторизованного пользователя.
      *
-     * @return возвращает ResponsEntity status с Ads Dto.
+     * @return возвращает Ads Dto.
      */
     @Override
     @Transactional
@@ -173,7 +173,7 @@ public class AdsServiceImpl implements AdsService {
      *
      * @param adPk идентификатор объявления в БД.
      * @param file изображение.
-     * @return возвращает ResponsEntity status с byte[] (бинарным кодом изображения).
+     * @return возвращает byte[] (бинарный код изображения).
      */
     @Override
     public byte[] updateImage(Integer adPk, MultipartFile file) {

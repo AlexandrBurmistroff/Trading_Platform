@@ -44,7 +44,7 @@ class UsersControllerTest {
     private CommentService commentsService;
 
     @MockBean
-    ImageService imageService;
+    private ImageService imageService;
 
     @InjectMocks
     private UsersController usersController;
