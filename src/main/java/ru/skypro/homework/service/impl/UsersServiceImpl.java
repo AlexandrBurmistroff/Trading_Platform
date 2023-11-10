@@ -51,7 +51,7 @@ public class UsersServiceImpl implements UsersService {
 
     /**
      * Метод, который ищет в БД пользователя по логину
-     * @return данные пользователя
+     * @return данные авторизованного пользователя
      */
     @Override
     public User getUser() {

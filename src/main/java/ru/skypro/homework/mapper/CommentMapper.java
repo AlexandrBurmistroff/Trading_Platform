@@ -7,6 +7,9 @@ import ru.skypro.homework.entity.CommentEntity;
 
 import java.util.List;
 
+/**
+ * Класс конвертирует модель CommentEntity в Comment Dto и обратно.
+ */
 @Mapper(componentModel = "spring")
 public interface CommentMapper {
 

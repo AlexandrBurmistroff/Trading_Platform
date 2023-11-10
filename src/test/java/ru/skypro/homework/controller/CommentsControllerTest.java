@@ -36,7 +36,7 @@ class CommentsControllerTest {
     private AdsService adsService;
 
     @MockBean
-    ImageService imageService;
+    private ImageService imageService;
 
     @MockBean
     private AuthService authService;

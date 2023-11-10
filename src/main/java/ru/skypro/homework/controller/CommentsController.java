@@ -10,6 +10,9 @@ import ru.skypro.homework.dto.Comments;
 import ru.skypro.homework.dto.CreateOrUpdateComment;
 import ru.skypro.homework.service.CommentService;
 
+/**
+ * Контроллер для обработки запросов о комментариях
+ */
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
@@ -26,7 +29,6 @@ public class CommentsController {
      * Метод отправляет запрос на сервис в поисках объявления, если такое объявление
      * существует, то возвращает список комментариев к нему.
      */
-
     @GetMapping("/{id}/comments")
     public ResponseEntity<Comments> getComments(@PathVariable Integer id) {
         Comments comments = commentService.getComments(id);
@@ -40,7 +42,6 @@ public class CommentsController {
      * @return ResponseEntity.
      * Метод отправляет запрос на сервис добавить новый комментарий к объявлению.
      */
-
     @PostMapping("/{id}/comments")
     public ResponseEntity<Comment> addComment(@PathVariable Integer id,
                                               @RequestBody CreateOrUpdateComment createOrUpdateComment) {
@@ -55,7 +56,6 @@ public class CommentsController {
      * @return ResponseEntity.
      * Метод отправляет запрос на сервис удалить конкретный комментарий к объявлению.
      */
-
     @DeleteMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Integer adId,
                                               @PathVariable Integer commentId) {
@@ -71,7 +71,6 @@ public class CommentsController {
      * @return ResponseEntity.
      * Метод отправляет запрос на сервис изменить конкретный комментарий к объявлению.
      */
-
     @PatchMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<Comment> updateComment(@PathVariable Integer adId,
                                                  @PathVariable Integer commentId,

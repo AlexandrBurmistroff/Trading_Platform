@@ -41,7 +41,7 @@ class ImageServiceImplTest {
     private UserAuthentication userAuthentication;
 
     @Autowired
-    ImageServiceImpl imageService;
+    private ImageServiceImpl imageService;
 
     private CommentEntity commentEntity1;
     private CommentEntity commentEntity2;

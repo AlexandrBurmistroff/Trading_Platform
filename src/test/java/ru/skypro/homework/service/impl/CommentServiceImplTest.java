@@ -42,7 +42,7 @@ class CommentServiceImplTest {
     private UserAuthentication userAuthentication;
 
     @Mock
-    ImageEntity imageEntity;
+    private ImageEntity imageEntity;
 
     private CommentEntity commentEntity1;
     private CommentEntity commentEntity2;
@@ -52,7 +52,7 @@ class CommentServiceImplTest {
     private List<CommentEntity> commentEntityList;
 
     @InjectMocks
-    CommentServiceImpl commentService;
+    private CommentServiceImpl commentService;
 
     private UserEntity userEntity;
     private AdEntity adEntity;

@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Сервис для поиска, добавления, обновления, удаления комментария
+ */
 @Slf4j
 @Service
 @Transactional

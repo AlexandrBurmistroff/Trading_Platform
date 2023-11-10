@@ -49,7 +49,7 @@ class AdsServiceImplTest {
     @Mock
     private UserAuthentication userAuthentication;
     @Mock
-    ImageEntity imageEntity;
+    private ImageEntity imageEntity;
 
     private CreateOrUpdateAd createOrUpdateAd;
 

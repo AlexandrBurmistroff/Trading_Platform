@@ -23,6 +23,9 @@ import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
+/**
+ * Сервис для загрузки фото в БД и отображения пользователю его аватара, фото объявления
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -68,6 +71,12 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
+    /**
+     * Метод для загрузки фото объявления
+     * @param adPk id объявления
+     * @param file фото
+     * @return фото
+     */
     @Override
     public byte[] uploadAdImage(Integer adPk, MultipartFile file) {
         AdEntity ad = adRepository.getReferenceById(adPk);
@@ -95,6 +104,11 @@ public class ImageServiceImpl implements ImageService {
         return getImage(image.getId());
     }
 
+    /**
+     * Метод для получения фото по id
+     * @param id идентификатор
+     * @return фото
+     */
     @Override
     public byte[] getImage(Integer id) {
         Optional<ImageEntity> foundedImage = imageRepository.findById(id);
