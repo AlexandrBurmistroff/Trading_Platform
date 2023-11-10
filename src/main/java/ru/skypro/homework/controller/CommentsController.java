@@ -27,7 +27,6 @@ public class CommentsController {
      * существует, то возвращает список комментариев к нему.
      */
 
-    //todo добавить unauthentication
     @GetMapping("/{id}/comments")
     public ResponseEntity<Comments> getComments(@PathVariable Integer id) {
         Comments comments = commentService.getComments(id);
@@ -42,7 +41,6 @@ public class CommentsController {
      * Метод отправляет запрос на сервис добавить новый комментарий к объявлению.
      */
 
-    //todo убрать authentication
     @PostMapping("/{id}/comments")
     public ResponseEntity<Comment> addComment(@PathVariable Integer id,
                                               @RequestBody CreateOrUpdateComment createOrUpdateComment) {
@@ -58,7 +56,6 @@ public class CommentsController {
      * Метод отправляет запрос на сервис удалить конкретный комментарий к объявлению.
      */
 
-    //todo после авторизации сделать запрещено удаялять чужие посты
     @DeleteMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Integer adId,
                                               @PathVariable Integer commentId) {
@@ -75,7 +72,6 @@ public class CommentsController {
      * Метод отправляет запрос на сервис изменить конкретный комментарий к объявлению.
      */
 
-    //todo
     @PatchMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<Comment> updateComment(@PathVariable Integer adId,
                                                  @PathVariable Integer commentId,

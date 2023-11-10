@@ -10,8 +10,11 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.AdEntity;
 import ru.skypro.homework.entity.CommentEntity;
@@ -24,10 +27,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(excludeAutoConfiguration = SecurityAutoConfiguration.class)
 class AdsControllerTest {
@@ -192,6 +194,19 @@ class AdsControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.count").value("2"));
+    }
+
+    @Test
+    void updateImage() throws Exception {
+        MockPart image = new MockPart("image", "file", "image".getBytes());
+        mockMvc.perform(MockMvcRequestBuilders
+                        .patch("/ads/2/image")
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .with(request -> {
+                            request.addPart(image);
+                            return request;
+                        }))
+                .andExpect(status().isOk());
     }
 
 }

@@ -277,10 +277,8 @@ class AdsServiceImplTest {
         Integer adPk = 1;
         byte[] imageBytes = new byte[10];
 
-        when(adRepository.findById(adPk)).thenReturn(Optional.empty());
-
+        when(adRepository.findById(any())).thenReturn(Optional.empty());
         when(userAuthentication.getCurrentUser()).thenReturn(null);
-
         assertThrows(EntityNotFoundException.class, () -> {
             adsService.updateImage(adPk, null);
         });
@@ -292,7 +290,7 @@ class AdsServiceImplTest {
         AdEntity foundAdEntity = new AdEntity();
         foundAdEntity.setPk(adPk);
         foundAdEntity.setUserEntity(userEntity);
-        when(adRepository.findById(adPk)).thenReturn(Optional.of(foundAdEntity));
+        when(adRepository.findById(any())).thenReturn(Optional.of(foundAdEntity));
 
         when(userAuthentication.getCurrentUser()).thenReturn(currentUserEntity);
 

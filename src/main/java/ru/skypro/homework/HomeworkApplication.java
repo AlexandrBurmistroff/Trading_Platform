@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.annotation.PostConstruct;
 
+
 @SpringBootApplication
 public class HomeworkApplication {
   public static void main(String[] args) {

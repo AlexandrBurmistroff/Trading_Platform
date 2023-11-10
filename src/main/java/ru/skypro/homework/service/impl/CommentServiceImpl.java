@@ -37,7 +37,7 @@ public class CommentServiceImpl implements CommentService {
     private final UserAuthentication userAuthentication;
 
     /**
-     * @param id id комменатрия
+     * @param id id объявления
      *           Поиск комментария в базе данных в формате CommentEntity
      * @return Optional<Comment>
      * @throws NullPointerException если комментарий не найден
